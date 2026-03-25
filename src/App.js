@@ -532,11 +532,11 @@ function StudentChart({ teams, onClose }) {
 👤 ${chart.name||"(이름)"}  /  📚 ${chart.mainBook||"(교재)"}  /  📅 ${chart.date||"(날짜)"}
 
 🎧 Intensive Listening
-  · ${chart.listening1||"—"}
-  · ${chart.listening2||"—"}
+  · ${chart.listening1||"-"}
+  · ${chart.listening2||"-"}
 
 🗣 Pronunciation & Comprehension Check
-  ${chart.pronunciation||"—"}
+  ${chart.pronunciation||"-"}
 
 ✅ Today's Task
 ${tk.length?tk.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}
@@ -564,11 +564,11 @@ ${hw.length?hw.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}${aiComment?`
         <div style="display:flex;gap:12px;margin-bottom:16px;">
           <div style="flex:1;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:10px;padding:12px 16px;">
             <div style="font-size:10px;color:#10b981;font-weight:700;margin-bottom:4px;">👤 이름</div>
-            <div style="font-size:16px;font-weight:800;color:#1e1b4b;">${chart.name||"—"}</div>
+            <div style="font-size:16px;font-weight:800;color:#1e1b4b;">${chart.name||"-"}</div>
           </div>
           <div style="flex:2;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:12px 16px;">
             <div style="font-size:10px;color:#3b82f6;font-weight:700;margin-bottom:4px;">📚 교재</div>
-            <div style="font-size:14px;font-weight:700;color:#1e1b4b;">${chart.mainBook||"—"}</div>
+            <div style="font-size:14px;font-weight:700;color:#1e1b4b;">${chart.mainBook||"-"}</div>
           </div>
           <div style="flex:1;background:#faf5ff;border:1.5px solid #ddd6fe;border-radius:10px;padding:12px 16px;">
             <div style="font-size:10px;color:#8b5cf6;font-weight:700;margin-bottom:4px;">📅 날짜</div>
@@ -577,12 +577,12 @@ ${hw.length?hw.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}${aiComment?`
         </div>
         <div style="background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:14px 16px;margin-bottom:12px;">
           <div style="font-size:10px;color:#3b82f6;font-weight:700;letter-spacing:1px;margin-bottom:8px;">🎧 INTENSIVE LISTENING</div>
-          <div style="font-size:13px;color:#1e1b4b;margin-bottom:4px;">· ${chart.listening1||"—"}</div>
-          <div style="font-size:13px;color:#1e1b4b;">· ${chart.listening2||"—"}</div>
+          <div style="font-size:13px;color:#1e1b4b;margin-bottom:4px;">· ${chart.listening1||"-"}</div>
+          <div style="font-size:13px;color:#1e1b4b;">· ${chart.listening2||"-"}</div>
         </div>
         <div style="background:#faf5ff;border:1.5px solid #ddd6fe;border-radius:10px;padding:14px 16px;margin-bottom:12px;">
           <div style="font-size:10px;color:#8b5cf6;font-weight:700;letter-spacing:1px;margin-bottom:8px;">🗣 PRONUNCIATION & COMPREHENSION CHECK</div>
-          <div style="font-size:13px;color:#1e1b4b;line-height:1.7;">${chart.pronunciation||"—"}</div>
+          <div style="font-size:13px;color:#1e1b4b;line-height:1.7;">${chart.pronunciation||"-"}</div>
         </div>
         <div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:10px;padding:14px 16px;margin-bottom:12px;">
           <div style="font-size:10px;color:#10b981;font-weight:700;letter-spacing:1px;margin-bottom:8px;">✅ TODAY'S TASK</div>
@@ -633,11 +633,11 @@ ${hw.length?hw.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}${aiComment?`
       <div style="display:flex;gap:10px;margin-bottom:12px;">
         <div style="flex:1;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:8px;padding:10px 14px;">
           <div style="font-size:9px;color:#10b981;font-weight:700;letter-spacing:1px;margin-bottom:3px;">NAME</div>
-          <div style="font-size:15px;font-weight:800;color:#1e1b4b;">\${chart.name||"—"}</div>
+          <div style="font-size:15px;font-weight:800;color:#1e1b4b;">\${chart.name||"-"}</div>
         </div>
         <div style="flex:2;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:8px;padding:10px 14px;">
           <div style="font-size:9px;color:#3b82f6;font-weight:700;letter-spacing:1px;margin-bottom:3px;">BOOK TITLE</div>
-          <div style="font-size:13px;font-weight:700;color:#1e1b4b;">\${chart.mainBook||"—"}</div>
+          <div style="font-size:13px;font-weight:700;color:#1e1b4b;">\${chart.mainBook||"-"}</div>
         </div>
         <div style="flex:1;background:#faf5ff;border:1.5px solid #ddd6fe;border-radius:8px;padding:10px 14px;">
           <div style="font-size:9px;color:#8b5cf6;font-weight:700;letter-spacing:1px;margin-bottom:3px;">DATE</div>
@@ -646,12 +646,12 @@ ${hw.length?hw.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}${aiComment?`
       </div>
       <div style="background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:8px;padding:12px 14px;margin-bottom:10px;">
         <div style="font-size:9px;color:#3b82f6;font-weight:700;letter-spacing:1px;margin-bottom:6px;">🎧 INTENSIVE LISTENING</div>
-        <div style="font-size:12px;color:#1e1b4b;margin-bottom:3px;">· \${chart.listening1||"—"}</div>
-        <div style="font-size:12px;color:#1e1b4b;">· \${chart.listening2||"—"}</div>
+        <div style="font-size:12px;color:#1e1b4b;margin-bottom:3px;">· \${chart.listening1||"-"}</div>
+        <div style="font-size:12px;color:#1e1b4b;">· \${chart.listening2||"-"}</div>
       </div>
       <div style="background:#faf5ff;border:1.5px solid #ddd6fe;border-radius:8px;padding:12px 14px;margin-bottom:10px;">
         <div style="font-size:9px;color:#8b5cf6;font-weight:700;letter-spacing:1px;margin-bottom:6px;">🗣 PRONUNCIATION & COMPREHENSION CHECK</div>
-        <div style="font-size:12px;color:#1e1b4b;line-height:1.6;">\${chart.pronunciation||"—"}</div>
+        <div style="font-size:12px;color:#1e1b4b;line-height:1.6;">\${chart.pronunciation||"-"}</div>
       </div>
       <div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:8px;padding:12px 14px;margin-bottom:10px;">
         <div style="font-size:9px;color:#10b981;font-weight:700;letter-spacing:1px;margin-bottom:6px;">✅ TODAY'S TASK</div>
@@ -675,10 +675,10 @@ ${hw.length?hw.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}${aiComment?`
     const prompt = `당신은 영어학원 선생님입니다. 아래 수업 기록을 바탕으로 학부모에게 보낼 따뜻하고 전문적인 코멘트를 2~3문장으로 작성해주세요.
 
 학생: ${chart.name||"학생"} / 교재: ${chart.mainBook||"미입력"} / 날짜: ${chart.date||"오늘"}
-Intensive Listening: ${chart.listening1||"—"}, ${chart.listening2||"—"}
-Pronunciation & Comprehension: ${chart.pronunciation||"—"}
-Today's Task: ${tk.join(", ")||"—"}
-Home Connection: ${hw.join(", ")||"—"}
+Intensive Listening: ${chart.listening1||"-"}, ${chart.listening2||"-"}
+Pronunciation & Comprehension: ${chart.pronunciation||"-"}
+Today's Task: ${tk.join(", ")||"-"}
+Home Connection: ${hw.join(", ")||"-"}
 
 요구사항:
 - 영어로 작성
@@ -945,15 +945,15 @@ export default function App() {
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:${w.grammar||w.reading||w.writing?'12px':'0'};">
             <div style="text-align:center;background:#fff;border-radius:10px;padding:10px;border:1.5px solid #f1f5f9;">
               <div style="font-size:10px;color:#94a3b8;margin-bottom:4px;">Wordly Wise</div>
-              <div style="font-size:15px;font-weight:800;color:${WW_C[w.ww]||'#374151'};">${w.ww||"—"}</div>
+              <div style="font-size:15px;font-weight:800;color:${WW_C[w.ww]||'#374151'};">${w.ww||"-"}</div>
             </div>
             <div style="text-align:center;background:#fff;border-radius:10px;padding:10px;border:1.5px solid #f1f5f9;">
               <div style="font-size:10px;color:#94a3b8;margin-bottom:4px;">숙제</div>
-              <div style="font-size:15px;font-weight:800;color:${HW_C[w.hw]||'#374151'};">${w.hw||"—"}</div>
+              <div style="font-size:15px;font-weight:800;color:${HW_C[w.hw]||'#374151'};">${w.hw||"-"}</div>
             </div>
             <div style="text-align:center;background:#fff;border-radius:10px;padding:10px;border:1.5px solid #f1f5f9;">
               <div style="font-size:10px;color:#94a3b8;margin-bottom:4px;">수업 태도</div>
-              <div style="font-size:15px;font-weight:800;color:${ATT_C[w.attitude]||'#374151'};">${w.attitude||"—"}</div>
+              <div style="font-size:15px;font-weight:800;color:${ATT_C[w.attitude]||'#374151'};">${w.attitude||"-"}</div>
             </div>
           </div>
           ${w.grammar||w.reading||w.writing?`<div style="display:grid;gap:8px;">
@@ -1164,8 +1164,8 @@ export default function App() {
               <div style={{ display:"flex",gap:10,flexWrap:"wrap" }}>
                 <StatCard icon="✅" label="WW Pass"    value={wwPass}   color="#10b981"/>
                 <StatCard icon="⚠️" label="WW Retest"  value={wwTotal-wwPass} color="#f59e0b"/>
-                <StatCard icon="📊" label="Pass율"     value={wwTotal>0?Math.round(wwPass/wwTotal*100)+"%":"—"} color="#6366f1"/>
-                <StatCard icon="📋" label="숙제 이행율" value={filled.length>0?Math.round(hwGood/filled.length*100)+"%":"—"} color="#8b5cf6"/>
+                <StatCard icon="📊" label="Pass율"     value={wwTotal>0?Math.round(wwPass/wwTotal*100)+"%":"-"} color="#6366f1"/>
+                <StatCard icon="📋" label="숙제 이행율" value={filled.length>0?Math.round(hwGood/filled.length*100)+"%":"-"} color="#8b5cf6"/>
                 <StatCard icon="🌟" label="적극적 횟수" value={attGood} color="#3b82f6"/>
                 <StatCard icon="📅" label="입력 주수"   value={filled.length} color="#94a3b8"/>
               </div>
