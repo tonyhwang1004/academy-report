@@ -713,7 +713,7 @@ ${hw.length?hw.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}${aiComment?`
               const accent=teamColorMap[tName]||"#6366f1";
               return (
                 <div key={tName} style={{ marginBottom:8 }}>
-                  <div style={{ fontSize:11,color:accent,fontWeight:700,marginBottom:6,fontFamily:"'DM Mono',monospace" }}>{tName}팀</div>
+                  <div style={{ fontSize:11,color:accent,fontWeight:700,marginBottom:6,fontFamily:"'DM Mono',monospace" }}>{tName} Team</div>
                   <div style={{ display:"flex",gap:6,flexWrap:"wrap" }}>
                     {students.map(s=>{
                       const on=selStudent===s&&selTeam===tName;
