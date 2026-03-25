@@ -540,7 +540,7 @@ function StudentChart({ teams, onClose }) {
 ✅ Today's Task
 ${tk.length?tk.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}
 
-🏠 Home Connection
+🏠 Home Connection / Unfinished Work
 ${hw.length?hw.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}${aiComment?`
 
 💬 선생님 코멘트
