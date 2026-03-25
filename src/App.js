@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import html2canvas from "html2canvas";
 
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7j-laaG375ha--NBLuYF4lSXSYVpPefsHRWXMBbPt72q_2Yf17xgv0Sh81NwPccXcvg/exec";
 const ADMIN_PASSWORD  = "sue12345";
@@ -604,7 +605,6 @@ ${hw.length?hw.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}${aiComment?`
   };
 
   const handleCopy = async () => {
-    const { default: html2canvas } = await import('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
     const el = document.createElement('div');
     el.style.cssText = 'position:fixed;left:-9999px;top:0;width:600px;background:#fff;padding:24px;font-family:Noto Sans KR,sans-serif;';
     el.innerHTML = buildPrintHtml();
@@ -615,6 +615,9 @@ ${hw.length?hw.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}${aiComment?`
         await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
         setCopied(true); setTimeout(()=>setCopied(false),2000);
       });
+    } catch(e) { 
+      navigator.clipboard.writeText(buildText());
+      setCopied(true); setTimeout(()=>setCopied(false),2000);
     } finally { document.body.removeChild(el); }
   };
 
