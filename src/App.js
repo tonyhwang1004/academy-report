@@ -587,7 +587,67 @@ function StudentChart({ teams, onClose }) {
     printHtml(html, `Student Chart - ${chart.name||"학생"}`);
   };
 
-  const handleCopy = () => { navigator.clipboard.writeText(buildText()); setCopied(true); setTimeout(()=>setCopied(false),2000); };
+  const handleCopy = async () => {
+    const { default: html2canvas } = await import('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+    const el = document.createElement('div');
+    el.style.cssText = 'position:fixed;left:-9999px;top:0;width:600px;background:#fff;padding:24px;font-family:Noto Sans KR,sans-serif;';
+    el.innerHTML = buildPrintHtml();
+    document.body.appendChild(el);
+    try {
+      const canvas = await html2canvas(el, { scale:2, useCORS:true, backgroundColor:'#fff' });
+      canvas.toBlob(async (blob) => {
+        await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+        setCopied(true); setTimeout(()=>setCopied(false),2000);
+      });
+    } finally { document.body.removeChild(el); }
+  };
+
+  const buildPrintHtml = () => {
+    const tk = chart.tasks.filter(x=>x.trim());
+    const hw = chart.homework.filter(x=>x.trim());
+    const today = chart.date || new Date().toLocaleDateString("ko-KR");
+    return \`<div style="font-family:'Noto Sans KR',sans-serif;max-width:560px;">
+      <div style="background:linear-gradient(135deg,#10b981,#3b82f6);color:#fff;padding:16px 20px;border-radius:10px;margin-bottom:16px;">
+        <div style="font-size:10px;letter-spacing:2px;opacity:0.75;margin-bottom:3px;">수리딩어학원</div>
+        <div style="font-size:20px;font-weight:800;">📋 Student Chart</div>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:12px;">
+        <div style="flex:1;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:8px;padding:10px 14px;">
+          <div style="font-size:9px;color:#10b981;font-weight:700;letter-spacing:1px;margin-bottom:3px;">NAME</div>
+          <div style="font-size:15px;font-weight:800;color:#1e1b4b;">\${chart.name||"—"}</div>
+        </div>
+        <div style="flex:2;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:8px;padding:10px 14px;">
+          <div style="font-size:9px;color:#3b82f6;font-weight:700;letter-spacing:1px;margin-bottom:3px;">BOOK TITLE</div>
+          <div style="font-size:13px;font-weight:700;color:#1e1b4b;">\${chart.mainBook||"—"}</div>
+        </div>
+        <div style="flex:1;background:#faf5ff;border:1.5px solid #ddd6fe;border-radius:8px;padding:10px 14px;">
+          <div style="font-size:9px;color:#8b5cf6;font-weight:700;letter-spacing:1px;margin-bottom:3px;">DATE</div>
+          <div style="font-size:12px;font-weight:700;color:#1e1b4b;">\${today}</div>
+        </div>
+      </div>
+      <div style="background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:8px;padding:12px 14px;margin-bottom:10px;">
+        <div style="font-size:9px;color:#3b82f6;font-weight:700;letter-spacing:1px;margin-bottom:6px;">🎧 INTENSIVE LISTENING</div>
+        <div style="font-size:12px;color:#1e1b4b;margin-bottom:3px;">· \${chart.listening1||"—"}</div>
+        <div style="font-size:12px;color:#1e1b4b;">· \${chart.listening2||"—"}</div>
+      </div>
+      <div style="background:#faf5ff;border:1.5px solid #ddd6fe;border-radius:8px;padding:12px 14px;margin-bottom:10px;">
+        <div style="font-size:9px;color:#8b5cf6;font-weight:700;letter-spacing:1px;margin-bottom:6px;">🗣 PRONUNCIATION & COMPREHENSION CHECK</div>
+        <div style="font-size:12px;color:#1e1b4b;line-height:1.6;">\${chart.pronunciation||"—"}</div>
+      </div>
+      <div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:8px;padding:12px 14px;margin-bottom:10px;">
+        <div style="font-size:9px;color:#10b981;font-weight:700;letter-spacing:1px;margin-bottom:6px;">✅ TODAY'S TASK</div>
+        \${tk.length?tk.map((x,i)=>\`<div style="font-size:12px;color:#1e1b4b;margin-bottom:3px;"><span style="color:#10b981;font-weight:700;">\${i+1}.</span> \${x}</div>\`).join(""):'<div style="font-size:12px;color:#94a3b8;">—</div>'}
+      </div>
+      <div style="background:#fffbeb;border:1.5px solid #fde68a;border-radius:8px;padding:12px 14px;margin-bottom:\${aiComment?'10px':'0'};">
+        <div style="font-size:9px;color:#f59e0b;font-weight:700;letter-spacing:1px;margin-bottom:6px;">🏠 HOME CONNECTION</div>
+        \${hw.length?hw.map((x,i)=>\`<div style="font-size:12px;color:#1e1b4b;margin-bottom:3px;"><span style="color:#f59e0b;font-weight:700;">\${i+1}.</span> \${x}</div>\`).join(""):'<div style="font-size:12px;color:#94a3b8;">—</div>'}
+      </div>
+      \${aiComment?\`<div style="background:linear-gradient(135deg,#eff6ff,#faf5ff);border:1.5px solid #e0e7ff;border-radius:8px;padding:12px 14px;">
+        <div style="font-size:9px;color:#6366f1;font-weight:700;letter-spacing:1px;margin-bottom:6px;">💬 선생님 코멘트</div>
+        <div style="font-size:12px;color:#374151;line-height:1.7;">\${aiComment}</div>
+      </div>\`:""}
+    </div>\`;
+  };
 
   const genAiComment = async () => {
     setAiLoading(true);
@@ -714,7 +774,7 @@ Home Connection: ${hw.join(", ")||"—"}
             <button onClick={()=>{ setChart({...CHART_EMPTY,tasks:["","","",""],homework:["","",""],name:selStudent}); setAiComment(""); }} style={{ flex:"0 0 auto",border:"2px solid #e2e8f0",borderRadius:14,padding:"13px 16px",fontSize:13,fontWeight:700,color:"#64748b",background:"#fff",cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif" }}>🔄 초기화</button>
             <button onClick={handlePrintChart} style={{ flex:"0 0 auto",background:"#f0fdf4",border:"1.5px solid #bbf7d0",borderRadius:14,padding:"13px 16px",fontSize:13,fontWeight:700,color:"#10b981",cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif" }}>🖨️ 인쇄</button>
             <button onClick={handleCopy} style={{ flex:1,background:copied?"linear-gradient(135deg,#10b981,#059669)":"linear-gradient(135deg,#10b981,#3b82f6)",color:"#fff",border:"none",borderRadius:14,padding:"13px",fontSize:15,fontWeight:800,cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif",boxShadow:"0 8px 24px #10b98130",transition:"all .2s" }}>
-              {copied?"✅ 복사됨!":"📋 카톡으로 복사"}
+              {copied?"✅ 이미지 복사됨!":"🖼️ 이미지로 복사"}
             </button>
           </div>
         </div>
