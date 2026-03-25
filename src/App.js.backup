@@ -179,7 +179,7 @@ function PillGroup({ options, value, onChange, colorMap }) {
             border: on?"2px solid "+c:"2px solid #e5e7eb",
             background: on?c:"#fff", color: on?"#fff":"#9ca3af",
             fontSize:12,fontWeight:on?700:500,cursor:"pointer",
-            transition:"all .15s",fontFamily:"Noto Sans KR,sans-serif",
+            transition:"all .15s",fontFamily:"'Noto Sans KR',sans-serif",
             boxShadow: on?`0 2px 8px ${c}40`:"none",
           }}>{opt}</button>
         );
@@ -193,8 +193,8 @@ function WeekCard({ weekNum, data, onChange }) {
   return (
     <div style={{ background:"#fff",borderRadius:20,border:"1.5px solid #f1f5f9",padding:"22px 24px",boxShadow:"0 4px 20px #00000008" }}>
       <div style={{ display:"flex",alignItems:"center",gap:12,marginBottom:20 }}>
-        <div style={{ width:36,height:36,borderRadius:10,background:"linear-gradient(135deg,#6366f1,#8b5cf6)",display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontSize:13,fontWeight:800,fontFamily:"DM Mono,monospace",boxShadow:"0 4px 12px #6366f130" }}>W{weekNum}</div>
-        <input type="date" value={data.date} onChange={e=>upd("date",e.target.value)} style={{ border:"2px solid #f1f5f9",background:"#f8fafc",borderRadius:10,padding:"6px 12px",fontSize:13,color:"#64748b",fontFamily:"Noto Sans KR,sans-serif",outline:"none" }}/>
+        <div style={{ width:36,height:36,borderRadius:10,background:"linear-gradient(135deg,#6366f1,#8b5cf6)",display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontSize:13,fontWeight:800,fontFamily:"'DM Mono',monospace",boxShadow:"0 4px 12px #6366f130" }}>W{weekNum}</div>
+        <input type="date" value={data.date} onChange={e=>upd("date",e.target.value)} style={{ border:"2px solid #f1f5f9",background:"#f8fafc",borderRadius:10,padding:"6px 12px",fontSize:13,color:"#64748b",fontFamily:"'Noto Sans KR',sans-serif",outline:"none" }}/>
       </div>
       <div style={{ display:"grid",gap:16 }}>
         {[
@@ -203,7 +203,7 @@ function WeekCard({ weekNum, data, onChange }) {
           {label:"🌟 Attitude",key:"attitude",opts:ATT_OPTIONS,cm:ATT_C},
         ].map(({label,key,opts,cm})=>(
           <div key={key}>
-            <div style={{ fontSize:11,fontWeight:700,color:"#94a3b8",marginBottom:7,fontFamily:"Noto Sans KR,sans-serif" }}>{label}</div>
+            <div style={{ fontSize:11,fontWeight:700,color:"#94a3b8",marginBottom:7,fontFamily:"'Noto Sans KR',sans-serif" }}>{label}</div>
             <PillGroup options={opts} value={data[key]} onChange={v=>upd(key,v)} colorMap={cm}/>
           </div>
         ))}
@@ -213,9 +213,9 @@ function WeekCard({ weekNum, data, onChange }) {
           {label:"✍️ Writing Evaluation",key:"writing",ph:"e.g. Improved use of connectives"},
         ].map(({label,key,ph})=>(
           <div key={key}>
-            <div style={{ fontSize:11,fontWeight:700,color:"#94a3b8",marginBottom:7,fontFamily:"Noto Sans KR,sans-serif" }}>{label}</div>
+            <div style={{ fontSize:11,fontWeight:700,color:"#94a3b8",marginBottom:7,fontFamily:"'Noto Sans KR',sans-serif" }}>{label}</div>
             <input value={data[key]} placeholder={ph} onChange={e=>upd(key,e.target.value)}
-              style={{ width:"100%",boxSizing:"border-box",border:"2px solid #f1f5f9",borderRadius:12,padding:"9px 14px",fontSize:13,fontFamily:"Noto Sans KR,sans-serif",color:"#374151",background:"#fafafa",outline:"none",transition:"border-color .15s" }}
+              style={{ width:"100%",boxSizing:"border-box",border:"2px solid #f1f5f9",borderRadius:12,padding:"9px 14px",fontSize:13,fontFamily:"'Noto Sans KR',sans-serif",color:"#374151",background:"#fafafa",outline:"none",transition:"border-color .15s" }}
               onFocus={e=>e.target.style.borderColor="#6366f1"} onBlur={e=>e.target.style.borderColor="#f1f5f9"}
             />
           </div>
@@ -229,8 +229,8 @@ function StatCard({ label,value,color,icon }) {
   return (
     <div style={{ background:"#fff",borderRadius:16,border:`2px solid ${color}20`,padding:"16px 12px",textAlign:"center",flex:1,minWidth:76,boxShadow:"0 4px 14px "+color+"10" }}>
       <div style={{ fontSize:18,marginBottom:4 }}>{icon}</div>
-      <div style={{ fontSize:22,fontWeight:800,color,fontFamily:"DM Mono,monospace",lineHeight:1 }}>{value}</div>
-      <div style={{ fontSize:10,color:"#94a3b8",marginTop:4,fontFamily:"Noto Sans KR,sans-serif",fontWeight:500 }}>{label}</div>
+      <div style={{ fontSize:22,fontWeight:800,color,fontFamily:"'DM Mono',monospace",lineHeight:1 }}>{value}</div>
+      <div style={{ fontSize:10,color:"#94a3b8",marginTop:4,fontFamily:"'Noto Sans KR',sans-serif",fontWeight:500 }}>{label}</div>
     </div>
   );
 }
@@ -242,24 +242,24 @@ function ReportBox({ text, loading, onCopy, onPrint, saved }) {
   if (loading) return (
     <div style={{ background:"#f8fafc",borderRadius:18,padding:32,display:"flex",alignItems:"center",gap:14,border:"2px dashed #e2e8f0" }}>
       <div style={{ width:22,height:22,borderRadius:"50%",border:"3px solid #6366f1",borderTopColor:"transparent",animation:"spin .7s linear infinite",flexShrink:0 }}/>
-      <span style={{ color:"#94a3b8",fontFamily:"Noto Sans KR,sans-serif",fontSize:14 }}>AI is generating feedback...</span>
+      <span style={{ color:"#94a3b8",fontFamily:"'Noto Sans KR',sans-serif",fontSize:14 }}>AI is generating feedback...</span>
     </div>
   );
   if (!text) return (
     <div style={{ background:"#fafbff",borderRadius:18,padding:36,border:"2px dashed #e0e7ff",textAlign:"center" }}>
       <div style={{ fontSize:36,marginBottom:10 }}>✨</div>
-      <div style={{ color:"#c7d2fe",fontFamily:"Noto Sans KR,sans-serif",fontSize:13,fontWeight:500 }}>Press the button to generate AI feedback</div>
+      <div style={{ color:"#c7d2fe",fontFamily:"'Noto Sans KR',sans-serif",fontSize:13,fontWeight:500 }}>Press the button to generate AI feedback</div>
     </div>
   );
   return (
     <div style={{ background:"linear-gradient(135deg,#eff6ff,#faf5ff)",borderRadius:18,padding:26,border:"2px solid #e0e7ff",position:"relative" }}>
       <div style={{ position:"absolute",top:16,right:16,display:"flex",gap:8,alignItems:"center" }}>
-        {saved&&<span style={{ fontSize:11,color:"#10b981",fontWeight:700,fontFamily:"DM Mono,monospace",background:"#f0fdf4",padding:"4px 10px",borderRadius:8,border:"1px solid #bbf7d0" }}>✓ Saved</span>}
-        <button onClick={onPrint} style={{ background:"#f0fdf4",color:"#10b981",border:"1.5px solid #bbf7d0",borderRadius:10,padding:"6px 14px",fontSize:12,fontFamily:"Noto Sans KR,sans-serif",cursor:"pointer",fontWeight:700 }}>🖨️ Print</button>
-        <button onClick={onCopy} style={{ background:"#6366f1",color:"#fff",border:"none",borderRadius:10,padding:"6px 14px",fontSize:12,fontFamily:"Noto Sans KR,sans-serif",cursor:"pointer",fontWeight:700,boxShadow:"0 4px 12px #6366f130" }}>📋 Copy</button>
+        {saved&&<span style={{ fontSize:11,color:"#10b981",fontWeight:700,fontFamily:"'DM Mono',monospace",background:"#f0fdf4",padding:"4px 10px",borderRadius:8,border:"1px solid #bbf7d0" }}>✓ Saved</span>}
+        <button onClick={onPrint} style={{ background:"#f0fdf4",color:"#10b981",border:"1.5px solid #bbf7d0",borderRadius:10,padding:"6px 14px",fontSize:12,fontFamily:"'Noto Sans KR',sans-serif",cursor:"pointer",fontWeight:700 }}>🖨️ Print</button>
+        <button onClick={onCopy} style={{ background:"#6366f1",color:"#fff",border:"none",borderRadius:10,padding:"6px 14px",fontSize:12,fontFamily:"'Noto Sans KR',sans-serif",cursor:"pointer",fontWeight:700,boxShadow:"0 4px 12px #6366f130" }}>📋 Copy</button>
       </div>
-      <div style={{ fontSize:10,fontWeight:700,color:"#a5b4fc",marginBottom:12,letterSpacing:2,fontFamily:"DM Mono,monospace" }}>AI FEEDBACK</div>
-      <p style={{ margin:0,lineHeight:1.9,color:"#374151",fontFamily:"Noto Sans KR,sans-serif",fontSize:14,whiteSpace:"pre-wrap",paddingRight:180 }}>{text}</p>
+      <div style={{ fontSize:10,fontWeight:700,color:"#a5b4fc",marginBottom:12,letterSpacing:2,fontFamily:"'DM Mono',monospace" }}>AI FEEDBACK</div>
+      <p style={{ margin:0,lineHeight:1.9,color:"#374151",fontFamily:"'Noto Sans KR',sans-serif",fontSize:14,whiteSpace:"pre-wrap",paddingRight:180 }}>{text}</p>
     </div>
   );
 }
@@ -267,7 +267,7 @@ function ReportBox({ text, loading, onCopy, onPrint, saved }) {
 function Toast({ msg }) {
   if (!msg) return null;
   return (
-    <div style={{ position:"fixed",bottom:24,left:"50%",transform:"translateX(-50%)",background:"#1e1b4b",color:"#fff",padding:"12px 24px",borderRadius:14,fontSize:13,fontFamily:"Noto Sans KR,sans-serif",fontWeight:600,boxShadow:"0 8px 24px #00000030",zIndex:9999,animation:"fadeUp .3s ease" }}>{msg}</div>
+    <div style={{ position:"fixed",bottom:24,left:"50%",transform:"translateX(-50%)",background:"#1e1b4b",color:"#fff",padding:"12px 24px",borderRadius:14,fontSize:13,fontFamily:"'Noto Sans KR',sans-serif",fontWeight:600,boxShadow:"0 8px 24px #00000030",zIndex:9999,animation:"fadeUp .3s ease" }}>{msg}</div>
   );
 }
 
@@ -293,7 +293,7 @@ function LoginScreen({ onLogin, onAdminLogin }) {
   };
 
   return (
-    <div style={{ minHeight:"100vh",background:"linear-gradient(150deg,#f0f4ff 0%,#fdf4ff 50%,#f0fdf9 100%)",display:"flex",alignItems:"center",justifyContent:"center",padding:20,fontFamily:"Noto Sans KR,sans-serif" }}>
+    <div style={{ minHeight:"100vh",background:"linear-gradient(150deg,#f0f4ff 0%,#fdf4ff 50%,#f0fdf9 100%)",display:"flex",alignItems:"center",justifyContent:"center",padding:20,fontFamily:"'Noto Sans KR',sans-serif" }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&family=DM+Mono:wght@500;700&display=swap'); @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}} *{box-sizing:border-box}`}</style>
       <div style={{ width:"100%",maxWidth:360,animation:"fadeUp .5s ease" }}>
         <div style={{ textAlign:"center",marginBottom:32 }}>
@@ -304,24 +304,24 @@ function LoginScreen({ onLogin, onAdminLogin }) {
         {mode === "teacher" ? (
           <div style={{ background:"#fff",borderRadius:24,padding:28,boxShadow:"0 8px 40px #6366f110",border:"1.5px solid #f1f5f9" }}>
             <div style={{ marginBottom:14 }}>
-              <div style={{ fontSize:11,fontWeight:700,color:"#94a3b8",letterSpacing:1.5,marginBottom:8,fontFamily:"DM Mono,monospace" }}>ID</div>
+              <div style={{ fontSize:11,fontWeight:700,color:"#94a3b8",letterSpacing:1.5,marginBottom:8,fontFamily:"'DM Mono',monospace" }}>ID</div>
               <input value={id} onChange={e=>setId(e.target.value)} placeholder="Enter ID"
-                style={{ width:"100%",border:"2px solid #e2e8f0",borderRadius:12,padding:"11px 14px",fontSize:14,fontFamily:"Noto Sans KR,sans-serif",color:"#374151",outline:"none",background:"#fafafa" }}
+                style={{ width:"100%",border:"2px solid #e2e8f0",borderRadius:12,padding:"11px 14px",fontSize:14,fontFamily:"'Noto Sans KR',sans-serif",color:"#374151",outline:"none",background:"#fafafa" }}
                 onFocus={e=>e.target.style.borderColor="#6366f1"} onBlur={e=>e.target.style.borderColor="#e2e8f0"}
               />
             </div>
             <div style={{ marginBottom:20 }}>
-              <div style={{ fontSize:11,fontWeight:700,color:"#94a3b8",letterSpacing:1.5,marginBottom:8,fontFamily:"DM Mono,monospace" }}>Password</div>
+              <div style={{ fontSize:11,fontWeight:700,color:"#94a3b8",letterSpacing:1.5,marginBottom:8,fontFamily:"'DM Mono',monospace" }}>Password</div>
               <input type="password" value={pw} onChange={e=>setPw(e.target.value)}
                 onKeyDown={e=>e.key==="Enter"&&tryLogin()} placeholder="Enter Password"
-                style={{ width:"100%",border:`2px solid ${err?"#f43f7a":"#e2e8f0"}`,borderRadius:12,padding:"11px 14px",fontSize:14,fontFamily:"Noto Sans KR,sans-serif",color:"#374151",outline:"none",background:err?"#fff0f5":"#fafafa" }}
+                style={{ width:"100%",border:`2px solid ${err?"#f43f7a":"#e2e8f0"}`,borderRadius:12,padding:"11px 14px",fontSize:14,fontFamily:"'Noto Sans KR',sans-serif",color:"#374151",outline:"none",background:err?"#fff0f5":"#fafafa" }}
               />
-              {err&&<div style={{ fontSize:12,color:"#f43f7a",marginTop:8,fontFamily:"Noto Sans KR,sans-serif" }}>❌ {err}</div>}
+              {err&&<div style={{ fontSize:12,color:"#f43f7a",marginTop:8,fontFamily:"'Noto Sans KR',sans-serif" }}>❌ {err}</div>}
             </div>
-            <button onClick={tryLogin} style={{ width:"100%",background:"linear-gradient(135deg,#6366f1,#8b5cf6)",color:"#fff",border:"none",borderRadius:14,padding:"14px",fontSize:15,fontWeight:800,cursor:"pointer",fontFamily:"Noto Sans KR,sans-serif",boxShadow:"0 8px 24px #6366f130",marginBottom:14 }}>
+            <button onClick={tryLogin} style={{ width:"100%",background:"linear-gradient(135deg,#6366f1,#8b5cf6)",color:"#fff",border:"none",borderRadius:14,padding:"14px",fontSize:15,fontWeight:800,cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif",boxShadow:"0 8px 24px #6366f130",marginBottom:14 }}>
               Login
             </button>
-            <button onClick={()=>setMode("admin")} style={{ width:"100%",background:"none",border:"none",color:"#94a3b8",fontSize:12,cursor:"pointer",fontFamily:"Noto Sans KR,sans-serif",padding:"4px" }}>
+            <button onClick={()=>setMode("admin")} style={{ width:"100%",background:"none",border:"none",color:"#94a3b8",fontSize:12,cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif",padding:"4px" }}>
               ⚙️ Login as Admin
             </button>
           </div>
@@ -329,16 +329,16 @@ function LoginScreen({ onLogin, onAdminLogin }) {
           <div style={{ background:"#fff",borderRadius:24,padding:28,boxShadow:"0 8px 40px #f43f7a10",border:"1.5px solid #fecdd3" }}>
             <div style={{ textAlign:"center",marginBottom:22 }}>
               <div style={{ fontSize:28,marginBottom:8 }}>🔐</div>
-              <div style={{ fontSize:16,fontWeight:800,color:"#1e1b4b",fontFamily:"Noto Sans KR,sans-serif" }}>Admin Login</div>
+              <div style={{ fontSize:16,fontWeight:800,color:"#1e1b4b",fontFamily:"'Noto Sans KR',sans-serif" }}>Admin Login</div>
             </div>
             <input type="password" value={adminPw} onChange={e=>setAdminPw(e.target.value)}
               onKeyDown={e=>e.key==="Enter"&&tryAdmin()} placeholder="Admin Password" autoFocus
-              style={{ width:"100%",border:`2px solid ${adminErr?"#f43f7a":"#e2e8f0"}`,borderRadius:12,padding:"11px 14px",fontSize:14,fontFamily:"Noto Sans KR,sans-serif",outline:"none",marginBottom:12,background:adminErr?"#fff0f5":"#fafafa" }}
+              style={{ width:"100%",border:`2px solid ${adminErr?"#f43f7a":"#e2e8f0"}`,borderRadius:12,padding:"11px 14px",fontSize:14,fontFamily:"'Noto Sans KR',sans-serif",outline:"none",marginBottom:12,background:adminErr?"#fff0f5":"#fafafa" }}
             />
-            {adminErr&&<div style={{ fontSize:12,color:"#f43f7a",marginBottom:12,textAlign:"center",fontFamily:"Noto Sans KR,sans-serif" }}>❌ Wrong Password</div>}
+            {adminErr&&<div style={{ fontSize:12,color:"#f43f7a",marginBottom:12,textAlign:"center",fontFamily:"'Noto Sans KR',sans-serif" }}>❌ Wrong Password</div>}
             <div style={{ display:"flex",gap:8 }}>
-              <button onClick={()=>{setMode("teacher");setAdminPw("");}} style={{ flex:1,border:"2px solid #e2e8f0",borderRadius:12,padding:"11px",fontSize:13,fontWeight:700,color:"#64748b",background:"#fff",cursor:"pointer",fontFamily:"Noto Sans KR,sans-serif" }}>Back</button>
-              <button onClick={tryAdmin} style={{ flex:2,background:"linear-gradient(135deg,#f43f7a,#f97316)",color:"#fff",border:"none",borderRadius:12,padding:"11px",fontSize:13,fontWeight:800,cursor:"pointer",fontFamily:"Noto Sans KR,sans-serif" }}>Login</button>
+              <button onClick={()=>{setMode("teacher");setAdminPw("");}} style={{ flex:1,border:"2px solid #e2e8f0",borderRadius:12,padding:"11px",fontSize:13,fontWeight:700,color:"#64748b",background:"#fff",cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif" }}>Back</button>
+              <button onClick={tryAdmin} style={{ flex:2,background:"linear-gradient(135deg,#f43f7a,#f97316)",color:"#fff",border:"none",borderRadius:12,padding:"11px",fontSize:13,fontWeight:800,cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif" }}>Login</button>
             </div>
           </div>
         )}
@@ -371,8 +371,8 @@ function AdminPanel({ teams, onSave, onClose }) {
           <div style={{ display:"flex",alignItems:"center",gap:12 }}>
             <div style={{ width:40,height:40,borderRadius:12,background:"linear-gradient(135deg,#f43f7a,#f97316)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18 }}>⚙️</div>
             <div>
-              <div style={{ fontSize:18,fontWeight:800,color:"#1e1b4b",fontFamily:"Noto Sans KR,sans-serif" }}>Admin Settings</div>
-              <div style={{ fontSize:11,color:"#94a3b8",fontFamily:"DM Mono,monospace" }}>TEAM & STUDENT EDITOR</div>
+              <div style={{ fontSize:18,fontWeight:800,color:"#1e1b4b",fontFamily:"'Noto Sans KR',sans-serif" }}>Admin Settings</div>
+              <div style={{ fontSize:11,color:"#94a3b8",fontFamily:"'DM Mono',monospace" }}>TEAM & STUDENT EDITOR</div>
             </div>
           </div>
           <button onClick={onClose} style={{ background:"#f1f5f9",border:"none",borderRadius:10,width:36,height:36,fontSize:18,cursor:"pointer",color:"#64748b" }}>✕</button>
@@ -385,36 +385,36 @@ function AdminPanel({ teams, onSave, onClose }) {
                 <div style={{ display:"flex",alignItems:"center",gap:10,marginBottom:14 }}>
                   <div style={{ width:10,height:10,borderRadius:"50%",background:accent,flexShrink:0 }}/>
                   <input defaultValue={teamName} onBlur={e=>updateTeamName(teamName,e.target.value)}
-                    style={{ flex:1,border:`2px solid ${accent}30`,borderRadius:10,padding:"7px 12px",fontSize:14,fontWeight:800,color:"#1e1b4b",fontFamily:"Noto Sans KR,sans-serif",outline:"none",background:"#fff" }}
+                    style={{ flex:1,border:`2px solid ${accent}30`,borderRadius:10,padding:"7px 12px",fontSize:14,fontWeight:800,color:"#1e1b4b",fontFamily:"'Noto Sans KR',sans-serif",outline:"none",background:"#fff" }}
                     onFocus={e=>e.target.style.borderColor=accent}
                   />
-                  <span style={{ fontSize:11,color:"#94a3b8",fontFamily:"DM Mono,monospace",whiteSpace:"nowrap" }}>{students.length} students</span>
-                  <button onClick={()=>removeTeam(teamName)} style={{ background:"#fff1f2",border:"1.5px solid #fecdd3",borderRadius:8,padding:"5px 10px",fontSize:11,color:"#f43f7a",cursor:"pointer",fontWeight:700,fontFamily:"Noto Sans KR,sans-serif" }}>Delete</button>
+                  <span style={{ fontSize:11,color:"#94a3b8",fontFamily:"'DM Mono',monospace",whiteSpace:"nowrap" }}>{students.length} students</span>
+                  <button onClick={()=>removeTeam(teamName)} style={{ background:"#fff1f2",border:"1.5px solid #fecdd3",borderRadius:8,padding:"5px 10px",fontSize:11,color:"#f43f7a",cursor:"pointer",fontWeight:700,fontFamily:"'Noto Sans KR',sans-serif" }}>Delete</button>
                 </div>
                 <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(160px,1fr))",gap:8 }}>
                   {students.map((sName,si)=>(
                     <div key={si} style={{ display:"flex",alignItems:"center",gap:6 }}>
                       <input value={sName} onChange={e=>updateStudent(teamName,si,e.target.value)}
-                        style={{ flex:1,border:"2px solid #f1f5f9",borderRadius:9,padding:"7px 10px",fontSize:13,color:"#374151",fontFamily:"Noto Sans KR,sans-serif",outline:"none",background:"#fff",minWidth:0 }}
+                        style={{ flex:1,border:"2px solid #f1f5f9",borderRadius:9,padding:"7px 10px",fontSize:13,color:"#374151",fontFamily:"'Noto Sans KR',sans-serif",outline:"none",background:"#fff",minWidth:0 }}
                         onFocus={e=>e.target.style.borderColor=accent} onBlur={e=>e.target.style.borderColor="#f1f5f9"}
                       />
                       <button onClick={()=>removeStudent(teamName,si)} style={{ background:"none",border:"none",color:"#fca5a5",cursor:"pointer",fontSize:16,padding:"2px 4px",flexShrink:0 }}>×</button>
                     </div>
                   ))}
-                  <button onClick={()=>addStudent(teamName)} style={{ border:`2px dashed ${accent}40`,borderRadius:9,padding:"7px 10px",fontSize:12,color:accent,cursor:"pointer",background:"transparent",fontFamily:"Noto Sans KR,sans-serif",fontWeight:600 }}>+ + Student</button>
+                  <button onClick={()=>addStudent(teamName)} style={{ border:`2px dashed ${accent}40`,borderRadius:9,padding:"7px 10px",fontSize:12,color:accent,cursor:"pointer",background:"transparent",fontFamily:"'Noto Sans KR',sans-serif",fontWeight:600 }}>+ + Student</button>
                 </div>
               </div>
             );
           })}
           <div style={{ display:"flex",gap:10,marginBottom:24 }}>
             <input value={newTeamName} onChange={e=>setNewTeamName(e.target.value)} onKeyDown={e=>e.key==="Enter"&&addTeam()} placeholder="Enter team name"
-              style={{ flex:1,border:"2px dashed #e2e8f0",borderRadius:12,padding:"10px 14px",fontSize:13,fontFamily:"Noto Sans KR,sans-serif",color:"#374151",outline:"none",background:"#fafbff" }}
+              style={{ flex:1,border:"2px dashed #e2e8f0",borderRadius:12,padding:"10px 14px",fontSize:13,fontFamily:"'Noto Sans KR',sans-serif",color:"#374151",outline:"none",background:"#fafbff" }}
             />
-            <button onClick={addTeam} style={{ background:"linear-gradient(135deg,#6366f1,#8b5cf6)",color:"#fff",border:"none",borderRadius:12,padding:"10px 20px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"Noto Sans KR,sans-serif",whiteSpace:"nowrap" }}>+ Add Team</button>
+            <button onClick={addTeam} style={{ background:"linear-gradient(135deg,#6366f1,#8b5cf6)",color:"#fff",border:"none",borderRadius:12,padding:"10px 20px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif",whiteSpace:"nowrap" }}>+ Add Team</button>
           </div>
           <div style={{ display:"flex",gap:10 }}>
-            <button onClick={onClose} style={{ flex:"0 0 auto",border:"2px solid #e2e8f0",borderRadius:14,padding:"13px 24px",fontSize:14,fontWeight:700,color:"#64748b",background:"#fff",cursor:"pointer",fontFamily:"Noto Sans KR,sans-serif" }}>Cancel</button>
-            <button onClick={()=>onSave(draft)} style={{ flex:1,background:"linear-gradient(135deg,#6366f1,#8b5cf6)",color:"#fff",border:"none",borderRadius:14,padding:"13px",fontSize:15,fontWeight:800,cursor:"pointer",fontFamily:"Noto Sans KR,sans-serif",boxShadow:"0 8px 24px #6366f130" }}>💾 Save Changes</button>
+            <button onClick={onClose} style={{ flex:"0 0 auto",border:"2px solid #e2e8f0",borderRadius:14,padding:"13px 24px",fontSize:14,fontWeight:700,color:"#64748b",background:"#fff",cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif" }}>Cancel</button>
+            <button onClick={()=>onSave(draft)} style={{ flex:1,background:"linear-gradient(135deg,#6366f1,#8b5cf6)",color:"#fff",border:"none",borderRadius:14,padding:"13px",fontSize:15,fontWeight:800,cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif",boxShadow:"0 8px 24px #6366f130" }}>💾 Save Changes</button>
           </div>
         </div>
       </div>
@@ -445,14 +445,14 @@ function AnniPanel({ teams, onSave, onClose }) {
           <div style={{ display:"flex",alignItems:"center",gap:12 }}>
             <div style={{ width:40,height:40,borderRadius:12,background:"linear-gradient(135deg,#10b981,#3b82f6)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18 }}>👩‍🏫</div>
             <div>
-              <div style={{ fontSize:17,fontWeight:800,color:"#1e1b4b",fontFamily:"Noto Sans KR,sans-serif" }}>Class & Student Manager</div>
-              <div style={{ fontSize:11,color:"#94a3b8",fontFamily:"DM Mono,monospace" }}>TEAM & STUDENT EDITOR</div>
+              <div style={{ fontSize:17,fontWeight:800,color:"#1e1b4b",fontFamily:"'Noto Sans KR',sans-serif" }}>Class & Student Manager</div>
+              <div style={{ fontSize:11,color:"#94a3b8",fontFamily:"'DM Mono',monospace" }}>TEAM & STUDENT EDITOR</div>
             </div>
           </div>
           <button onClick={onClose} style={{ background:"#f1f5f9",border:"none",borderRadius:10,width:36,height:36,fontSize:18,cursor:"pointer",color:"#64748b" }}>✕</button>
         </div>
         <div style={{ padding:"22px 26px" }}>
-          <div style={{ marginBottom:16,padding:"12px 16px",background:"#f0fdf4",borderRadius:14,border:"1.5px solid #bbf7d0",fontSize:12,color:"#065f46",fontFamily:"Noto Sans KR,sans-serif",lineHeight:1.7 }}>
+          <div style={{ marginBottom:16,padding:"12px 16px",background:"#f0fdf4",borderRadius:14,border:"1.5px solid #bbf7d0",fontSize:12,color:"#065f46",fontFamily:"'Noto Sans KR',sans-serif",lineHeight:1.7 }}>
             💡 You can add/delete class names and students.
           </div>
           {Object.entries(draft).map(([teamName,students],ti)=>{
@@ -462,35 +462,35 @@ function AnniPanel({ teams, onSave, onClose }) {
                 <div style={{ display:"flex",alignItems:"center",gap:10,marginBottom:12 }}>
                   <div style={{ width:10,height:10,borderRadius:"50%",background:accent,flexShrink:0 }}/>
                   <input defaultValue={teamName} onBlur={e=>updateTeamName(teamName,e.target.value)}
-                    style={{ flex:1,border:`2px solid ${accent}30`,borderRadius:10,padding:"7px 12px",fontSize:14,fontWeight:800,color:"#1e1b4b",fontFamily:"Noto Sans KR,sans-serif",outline:"none",background:"#fff" }}
+                    style={{ flex:1,border:`2px solid ${accent}30`,borderRadius:10,padding:"7px 12px",fontSize:14,fontWeight:800,color:"#1e1b4b",fontFamily:"'Noto Sans KR',sans-serif",outline:"none",background:"#fff" }}
                     onFocus={e=>e.target.style.borderColor=accent}
                   />
-                  <span style={{ fontSize:11,color:"#94a3b8",fontFamily:"DM Mono,monospace" }}>{students.length} students</span>
+                  <span style={{ fontSize:11,color:"#94a3b8",fontFamily:"'DM Mono',monospace" }}>{students.length} students</span>
                 </div>
                 <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(150px,1fr))",gap:8 }}>
                   {students.map((sName,si)=>(
                     <div key={si} style={{ display:"flex",alignItems:"center",gap:6 }}>
                       <input value={sName} onChange={e=>updateStudent(teamName,si,e.target.value)}
-                        style={{ flex:1,border:"2px solid #f1f5f9",borderRadius:9,padding:"7px 10px",fontSize:13,color:"#374151",fontFamily:"Noto Sans KR,sans-serif",outline:"none",background:"#fff",minWidth:0 }}
+                        style={{ flex:1,border:"2px solid #f1f5f9",borderRadius:9,padding:"7px 10px",fontSize:13,color:"#374151",fontFamily:"'Noto Sans KR',sans-serif",outline:"none",background:"#fff",minWidth:0 }}
                         onFocus={e=>e.target.style.borderColor=accent} onBlur={e=>e.target.style.borderColor="#f1f5f9"}
                       />
                       <button onClick={()=>removeStudent(teamName,si)} style={{ background:"none",border:"none",color:"#fca5a5",cursor:"pointer",fontSize:16,padding:"2px 4px",flexShrink:0 }}>×</button>
                     </div>
                   ))}
-                  <button onClick={()=>addStudent(teamName)} style={{ border:`2px dashed ${accent}40`,borderRadius:9,padding:"7px 10px",fontSize:12,color:accent,cursor:"pointer",background:"transparent",fontFamily:"Noto Sans KR,sans-serif",fontWeight:600 }}>+ + Student</button>
+                  <button onClick={()=>addStudent(teamName)} style={{ border:`2px dashed ${accent}40`,borderRadius:9,padding:"7px 10px",fontSize:12,color:accent,cursor:"pointer",background:"transparent",fontFamily:"'Noto Sans KR',sans-serif",fontWeight:600 }}>+ + Student</button>
                 </div>
               </div>
             );
           })}
           <div style={{ display:"flex",gap:10,marginBottom:22 }}>
             <input value={newTeamName} onChange={e=>setNewTeamName(e.target.value)} onKeyDown={e=>e.key==="Enter"&&addTeam()} placeholder="Enter class name"
-              style={{ flex:1,border:"2px dashed #e2e8f0",borderRadius:12,padding:"10px 14px",fontSize:13,fontFamily:"Noto Sans KR,sans-serif",color:"#374151",outline:"none",background:"#fafbff" }}
+              style={{ flex:1,border:"2px dashed #e2e8f0",borderRadius:12,padding:"10px 14px",fontSize:13,fontFamily:"'Noto Sans KR',sans-serif",color:"#374151",outline:"none",background:"#fafbff" }}
             />
-            <button onClick={addTeam} style={{ background:"linear-gradient(135deg,#10b981,#3b82f6)",color:"#fff",border:"none",borderRadius:12,padding:"10px 20px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"Noto Sans KR,sans-serif",whiteSpace:"nowrap" }}>+ Add Class</button>
+            <button onClick={addTeam} style={{ background:"linear-gradient(135deg,#10b981,#3b82f6)",color:"#fff",border:"none",borderRadius:12,padding:"10px 20px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif",whiteSpace:"nowrap" }}>+ Add Class</button>
           </div>
           <div style={{ display:"flex",gap:10 }}>
-            <button onClick={onClose} style={{ flex:"0 0 auto",border:"2px solid #e2e8f0",borderRadius:14,padding:"13px 24px",fontSize:14,fontWeight:700,color:"#64748b",background:"#fff",cursor:"pointer",fontFamily:"Noto Sans KR,sans-serif" }}>Cancel</button>
-            <button onClick={()=>onSave(draft)} style={{ flex:1,background:"linear-gradient(135deg,#10b981,#3b82f6)",color:"#fff",border:"none",borderRadius:14,padding:"13px",fontSize:15,fontWeight:800,cursor:"pointer",fontFamily:"Noto Sans KR,sans-serif",boxShadow:"0 8px 24px #10b98130" }}>💾 Save</button>
+            <button onClick={onClose} style={{ flex:"0 0 auto",border:"2px solid #e2e8f0",borderRadius:14,padding:"13px 24px",fontSize:14,fontWeight:700,color:"#64748b",background:"#fff",cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif" }}>Cancel</button>
+            <button onClick={()=>onSave(draft)} style={{ flex:1,background:"linear-gradient(135deg,#10b981,#3b82f6)",color:"#fff",border:"none",borderRadius:14,padding:"13px",fontSize:15,fontWeight:800,cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif",boxShadow:"0 8px 24px #10b98130" }}>💾 Save</button>
           </div>
         </div>
       </div>
@@ -529,8 +529,8 @@ function StudentChart({ teams, onClose }) {
 👤 ${chart.name||"(Name)"}  /  📚 ${chart.mainBook||"(Book)"}  /  📅 ${chart.date||"(Date)"}
 
 🎧 Intensive Listening
-  - ${chart.listening1||"-"}
-  - ${chart.listening2||"-"}
+  · ${chart.listening1||"-"}
+  · ${chart.listening2||"-"}
 
 🗣 Pronunciation & Comprehension Check
   ${chart.pronunciation||"-"}
@@ -595,7 +595,7 @@ ${hw.length?hw.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}${aiComment?`
           <div style="font-size:13px;color:#374151;line-height:1.8;">${aiComment}</div>
         </div>`:""}
         <div style="margin-top:20px;padding-top:14px;border-top:1px solid #f1f5f9;text-align:center;font-size:10px;color:#94a3b8;">
-          Sue Reading Academy - Academy Report System - ${today}
+          Sue Reading Academy · Academy Report System · ${today}
         </div>
       </div>`;
     printHtml(html, `Student Chart - ${chart.name||"Student"}`);
@@ -697,24 +697,24 @@ ${hw.length?hw.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}${aiComment?`
           <div style={{ display:"flex",alignItems:"center",gap:12 }}>
             <div style={{ width:40,height:40,borderRadius:12,background:"linear-gradient(135deg,#10b981,#3b82f6)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18 }}>📋</div>
             <div>
-              <div style={{ fontSize:17,fontWeight:800,color:"#1e1b4b",fontFamily:"Noto Sans KR,sans-serif" }}>Student Chart</div>
-              <div style={{ fontSize:11,color:"#94a3b8",fontFamily:"DM Mono,monospace" }}>Sue Reading Academy</div>
+              <div style={{ fontSize:17,fontWeight:800,color:"#1e1b4b",fontFamily:"'Noto Sans KR',sans-serif" }}>Student Chart</div>
+              <div style={{ fontSize:11,color:"#94a3b8",fontFamily:"'DM Mono',monospace" }}>Sue Reading Academy</div>
             </div>
           </div>
           <button onClick={onClose} style={{ background:"#f1f5f9",border:"none",borderRadius:10,width:36,height:36,fontSize:18,cursor:"pointer",color:"#64748b" }}>✕</button>
         </div>
         <div style={{ padding:"22px 26px" }}>
           <div style={{ marginBottom:18 }}>
-            <div style={{ fontSize:11,fontWeight:700,color:"#94a3b8",letterSpacing:1.5,marginBottom:10,fontFamily:"DM Mono,monospace" }}>Select Student</div>
+            <div style={{ fontSize:11,fontWeight:700,color:"#94a3b8",letterSpacing:1.5,marginBottom:10,fontFamily:"'DM Mono',monospace" }}>Select Student</div>
             {Object.entries(teams).map(([tName,students],ti)=>{
               const accent=teamColorMap[tName]||"#6366f1";
               return (
                 <div key={tName} style={{ marginBottom:8 }}>
-                  <div style={{ fontSize:11,color:accent,fontWeight:700,marginBottom:6,fontFamily:"DM Mono,monospace" }}>{tName} Team</div>
+                  <div style={{ fontSize:11,color:accent,fontWeight:700,marginBottom:6,fontFamily:"'DM Mono',monospace" }}>{tName} Team</div>
                   <div style={{ display:"flex",gap:6,flexWrap:"wrap" }}>
                     {students.map(s=>{
                       const on=selStudent===s&&selTeam===tName;
-                      return <button key={s} onClick={()=>selectStudent(tName,s)} style={{ padding:"6px 14px",borderRadius:12,border:on?("2px solid "+accent):"2px solid #f1f5f9",background:on?accent:"#fafafa",color:on?"#fff":"#94a3b8",fontSize:12,fontWeight:on?700:500,cursor:"pointer",fontFamily:"Noto Sans KR,sans-serif",transition:"all .15s" }}>{s}</button>;
+                      return <button key={s} onClick={()=>selectStudent(tName,s)} style={{ padding:"6px 14px",borderRadius:12,border:on?("2px solid "+accent):"2px solid #f1f5f9",background:on?accent:"#fafafa",color:on?"#fff":"#94a3b8",fontSize:12,fontWeight:on?700:500,cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif",transition:"all .15s" }}>{s}</button>;
                     })}
                   </div>
                 </div>
@@ -724,70 +724,70 @@ ${hw.length?hw.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}${aiComment?`
           <div style={{ display:"grid",gridTemplateColumns:"1fr 2fr 1fr",gap:10,marginBottom:14 }}>
             {[{label:"Name",key:"name",ph:"Student Name"},{label:"Main Book Title",key:"mainBook",ph:"Book Title"},{label:"Date",key:"date",ph:"Date",type:"date"}].map(({label,key,ph,type})=>(
               <div key={key}>
-                <div style={{ fontSize:10,fontWeight:700,color:"#94a3b8",marginBottom:5,fontFamily:"DM Mono,monospace" }}>{label}</div>
+                <div style={{ fontSize:10,fontWeight:700,color:"#94a3b8",marginBottom:5,fontFamily:"'DM Mono',monospace" }}>{label}</div>
                 <input type={type||"text"} value={chart[key]} onChange={e=>upd(key,e.target.value)} placeholder={ph}
-                  style={{ width:"100%",boxSizing:"border-box",border:"2px solid #f1f5f9",borderRadius:10,padding:"8px 10px",fontSize:12,fontFamily:"Noto Sans KR,sans-serif",color:"#374151",background:"#fafafa",outline:"none" }}
+                  style={{ width:"100%",boxSizing:"border-box",border:"2px solid #f1f5f9",borderRadius:10,padding:"8px 10px",fontSize:12,fontFamily:"'Noto Sans KR',sans-serif",color:"#374151",background:"#fafafa",outline:"none" }}
                   onFocus={e=>e.target.style.borderColor="#10b981"} onBlur={e=>e.target.style.borderColor="#f1f5f9"}
                 />
               </div>
             ))}
           </div>
           <div style={{ background:"#f8fafc",borderRadius:16,border:"1.5px solid #f1f5f9",padding:"14px 16px",marginBottom:10 }}>
-            <div style={{ fontSize:10,fontWeight:700,color:"#3b82f6",marginBottom:8,fontFamily:"DM Mono,monospace",letterSpacing:1 }}>🎧 INTENSIVE LISTENING</div>
+            <div style={{ fontSize:10,fontWeight:700,color:"#3b82f6",marginBottom:8,fontFamily:"'DM Mono',monospace",letterSpacing:1 }}>🎧 INTENSIVE LISTENING</div>
             <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:8 }}>
               {["listening1","listening2"].map((k,i)=>(
                 <input key={k} value={chart[k]} onChange={e=>upd(k,e.target.value)} placeholder={"Item "+(i+1)}
-                  style={{ border:"2px solid #f1f5f9",borderRadius:10,padding:"8px 12px",fontSize:13,fontFamily:"Noto Sans KR,sans-serif",color:"#374151",background:"#fff",outline:"none" }}
+                  style={{ border:"2px solid #f1f5f9",borderRadius:10,padding:"8px 12px",fontSize:13,fontFamily:"'Noto Sans KR',sans-serif",color:"#374151",background:"#fff",outline:"none" }}
                   onFocus={e=>e.target.style.borderColor="#3b82f6"} onBlur={e=>e.target.style.borderColor="#f1f5f9"}
                 />
               ))}
             </div>
           </div>
           <div style={{ background:"#f8fafc",borderRadius:16,border:"1.5px solid #f1f5f9",padding:"14px 16px",marginBottom:10 }}>
-            <div style={{ fontSize:10,fontWeight:700,color:"#8b5cf6",marginBottom:8,fontFamily:"DM Mono,monospace",letterSpacing:1 }}>🗣 PRONUNCIATION & COMPREHENSION CHECK</div>
+            <div style={{ fontSize:10,fontWeight:700,color:"#8b5cf6",marginBottom:8,fontFamily:"'DM Mono',monospace",letterSpacing:1 }}>🗣 PRONUNCIATION & COMPREHENSION CHECK</div>
             <textarea value={chart.pronunciation} onChange={e=>upd("pronunciation",e.target.value)} placeholder="Enter pronunciation & comprehension notes"
-              style={{ width:"100%",boxSizing:"border-box",border:"2px solid #f1f5f9",borderRadius:10,padding:"10px 12px",fontSize:13,fontFamily:"Noto Sans KR,sans-serif",color:"#374151",background:"#fff",outline:"none",resize:"vertical",minHeight:72,lineHeight:1.7 }}
+              style={{ width:"100%",boxSizing:"border-box",border:"2px solid #f1f5f9",borderRadius:10,padding:"10px 12px",fontSize:13,fontFamily:"'Noto Sans KR',sans-serif",color:"#374151",background:"#fff",outline:"none",resize:"vertical",minHeight:72,lineHeight:1.7 }}
               onFocus={e=>e.target.style.borderColor="#8b5cf6"} onBlur={e=>e.target.style.borderColor="#f1f5f9"}
             />
           </div>
           <div style={{ background:"#f8fafc",borderRadius:16,border:"1.5px solid #f1f5f9",padding:"14px 16px",marginBottom:10 }}>
-            <div style={{ fontSize:10,fontWeight:700,color:"#10b981",marginBottom:8,fontFamily:"DM Mono,monospace",letterSpacing:1 }}>✅ TODAY'S TASK</div>
+            <div style={{ fontSize:10,fontWeight:700,color:"#10b981",marginBottom:8,fontFamily:"'DM Mono',monospace",letterSpacing:1 }}>✅ TODAY'S TASK</div>
             {chart.tasks.map((v,i)=>(
               <div key={i} style={{ display:"flex",alignItems:"center",gap:8,marginBottom:i<3?8:0 }}>
-                <span style={{ fontSize:12,fontWeight:700,color:"#10b981",fontFamily:"DM Mono,monospace",width:16,flexShrink:0 }}>{i+1}.</span>
+                <span style={{ fontSize:12,fontWeight:700,color:"#10b981",fontFamily:"'DM Mono',monospace",width:16,flexShrink:0 }}>{i+1}.</span>
                 <input value={v} onChange={e=>updArr("tasks",i,e.target.value)} placeholder={"Task "+(i+1)}
-                  style={{ flex:1,border:"2px solid #f1f5f9",borderRadius:10,padding:"8px 12px",fontSize:13,fontFamily:"Noto Sans KR,sans-serif",color:"#374151",background:"#fff",outline:"none" }}
+                  style={{ flex:1,border:"2px solid #f1f5f9",borderRadius:10,padding:"8px 12px",fontSize:13,fontFamily:"'Noto Sans KR',sans-serif",color:"#374151",background:"#fff",outline:"none" }}
                   onFocus={e=>e.target.style.borderColor="#10b981"} onBlur={e=>e.target.style.borderColor="#f1f5f9"}
                 />
               </div>
             ))}
           </div>
           <div style={{ background:"#f8fafc",borderRadius:16,border:"1.5px solid #f1f5f9",padding:"14px 16px",marginBottom:16 }}>
-            <div style={{ fontSize:10,fontWeight:700,color:"#f59e0b",marginBottom:8,fontFamily:"DM Mono,monospace",letterSpacing:1 }}>🏠 HOME CONNECTION / UNFINISHED WORK</div>
+            <div style={{ fontSize:10,fontWeight:700,color:"#f59e0b",marginBottom:8,fontFamily:"'DM Mono',monospace",letterSpacing:1 }}>🏠 HOME CONNECTION / UNFINISHED WORK</div>
             {chart.homework.map((v,i)=>(
               <div key={i} style={{ display:"flex",alignItems:"center",gap:8,marginBottom:i<2?8:0 }}>
-                <span style={{ fontSize:12,fontWeight:700,color:"#f59e0b",fontFamily:"DM Mono,monospace",width:16,flexShrink:0 }}>{i+1}.</span>
+                <span style={{ fontSize:12,fontWeight:700,color:"#f59e0b",fontFamily:"'DM Mono',monospace",width:16,flexShrink:0 }}>{i+1}.</span>
                 <input value={v} onChange={e=>updArr("homework",i,e.target.value)} placeholder={"HW "+(i+1)}
-                  style={{ flex:1,border:"2px solid #f1f5f9",borderRadius:10,padding:"8px 12px",fontSize:13,fontFamily:"Noto Sans KR,sans-serif",color:"#374151",background:"#fff",outline:"none" }}
+                  style={{ flex:1,border:"2px solid #f1f5f9",borderRadius:10,padding:"8px 12px",fontSize:13,fontFamily:"'Noto Sans KR',sans-serif",color:"#374151",background:"#fff",outline:"none" }}
                   onFocus={e=>e.target.style.borderColor="#f59e0b"} onBlur={e=>e.target.style.borderColor="#f1f5f9"}
                 />
               </div>
             ))}
           </div>
-          <button onClick={genAiComment} disabled={aiLoading} style={{ width:"100%",marginBottom:10,padding:"14px",background:aiLoading?"#f1f5f9":"linear-gradient(135deg,#6366f1,#8b5cf6)",color:aiLoading?"#94a3b8":"#fff",border:"none",borderRadius:14,fontSize:14,fontWeight:800,cursor:aiLoading?"not-allowed":"pointer",fontFamily:"Noto Sans KR,sans-serif",boxShadow:aiLoading?"none":"0 8px 24px #6366f130",transition:"all .2s" }}>
+          <button onClick={genAiComment} disabled={aiLoading} style={{ width:"100%",marginBottom:10,padding:"14px",background:aiLoading?"#f1f5f9":"linear-gradient(135deg,#6366f1,#8b5cf6)",color:aiLoading?"#94a3b8":"#fff",border:"none",borderRadius:14,fontSize:14,fontWeight:800,cursor:aiLoading?"not-allowed":"pointer",fontFamily:"'Noto Sans KR',sans-serif",boxShadow:aiLoading?"none":"0 8px 24px #6366f130",transition:"all .2s" }}>
             {aiLoading?"✨ Generating AI Comment...":"✨ Generate AI Comment"}
           </button>
           {aiComment && (
             <div style={{ background:"linear-gradient(135deg,#eff6ff,#faf5ff)",borderRadius:14,border:"2px solid #e0e7ff",padding:"14px 16px",marginBottom:12 }}>
-              <div style={{ fontSize:10,fontWeight:700,color:"#6366f1",marginBottom:8,fontFamily:"DM Mono,monospace",letterSpacing:1.5 }}>💬 AI Comment Preview</div>
-              <p style={{ margin:0,fontSize:13,color:"#374151",fontFamily:"Noto Sans KR,sans-serif",lineHeight:1.9,whiteSpace:"pre-wrap" }}>{aiComment}</p>
-              <button onClick={()=>setAiComment("")} style={{ marginTop:8,background:"none",border:"none",color:"#94a3b8",fontSize:11,cursor:"pointer",fontFamily:"Noto Sans KR,sans-serif" }}>× Delete Comment</button>
+              <div style={{ fontSize:10,fontWeight:700,color:"#6366f1",marginBottom:8,fontFamily:"'DM Mono',monospace",letterSpacing:1.5 }}>💬 AI Comment Preview</div>
+              <p style={{ margin:0,fontSize:13,color:"#374151",fontFamily:"'Noto Sans KR',sans-serif",lineHeight:1.9,whiteSpace:"pre-wrap" }}>{aiComment}</p>
+              <button onClick={()=>setAiComment("")} style={{ marginTop:8,background:"none",border:"none",color:"#94a3b8",fontSize:11,cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif" }}>× Delete Comment</button>
             </div>
           )}
           <div style={{ display:"flex",gap:8 }}>
-            <button onClick={()=>{ setChart({...CHART_EMPTY,tasks:["","","",""],homework:["","",""],name:selStudent}); setAiComment(""); }} style={{ flex:"0 0 auto",border:"2px solid #e2e8f0",borderRadius:14,padding:"13px 16px",fontSize:13,fontWeight:700,color:"#64748b",background:"#fff",cursor:"pointer",fontFamily:"Noto Sans KR,sans-serif" }}>🔄 Reset</button>
-            <button onClick={handlePrintChart} style={{ flex:"0 0 auto",background:"#f0fdf4",border:"1.5px solid #bbf7d0",borderRadius:14,padding:"13px 16px",fontSize:13,fontWeight:700,color:"#10b981",cursor:"pointer",fontFamily:"Noto Sans KR,sans-serif" }}>🖨️ Print</button>
-            <button onClick={handleCopy} style={{ flex:1,background:copied?"linear-gradient(135deg,#10b981,#059669)":"linear-gradient(135deg,#10b981,#3b82f6)",color:"#fff",border:"none",borderRadius:14,padding:"13px",fontSize:15,fontWeight:800,cursor:"pointer",fontFamily:"Noto Sans KR,sans-serif",boxShadow:"0 8px 24px #10b98130",transition:"all .2s" }}>
+            <button onClick={()=>{ setChart({...CHART_EMPTY,tasks:["","","",""],homework:["","",""],name:selStudent}); setAiComment(""); }} style={{ flex:"0 0 auto",border:"2px solid #e2e8f0",borderRadius:14,padding:"13px 16px",fontSize:13,fontWeight:700,color:"#64748b",background:"#fff",cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif" }}>🔄 Reset</button>
+            <button onClick={handlePrintChart} style={{ flex:"0 0 auto",background:"#f0fdf4",border:"1.5px solid #bbf7d0",borderRadius:14,padding:"13px 16px",fontSize:13,fontWeight:700,color:"#10b981",cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif" }}>🖨️ Print</button>
+            <button onClick={handleCopy} style={{ flex:1,background:copied?"linear-gradient(135deg,#10b981,#059669)":"linear-gradient(135deg,#10b981,#3b82f6)",color:"#fff",border:"none",borderRadius:14,padding:"13px",fontSize:15,fontWeight:800,cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif",boxShadow:"0 8px 24px #10b98130",transition:"all .2s" }}>
               {copied?"✅ Image Copied!":"🖼️ Copy as Image"}
             </button>
           </div>
@@ -914,7 +914,7 @@ export default function App() {
     const html = `
       <div style="max-width:600px;margin:0 auto;font-family:Noto Sans KR,sans-serif;">
         <div style="background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;padding:20px 24px;border-radius:12px;margin-bottom:20px;">
-          <div style="font-size:11px;letter-spacing:2px;opacity:0.8;margin-bottom:4px;">Sue Reading Academy - Weekly Report</div>
+          <div style="font-size:11px;letter-spacing:2px;opacity:0.8;margin-bottom:4px;">Sue Reading Academy · Weekly Report</div>
           <div style="font-size:22px;font-weight:800;">📅 Weekly Report</div>
         </div>
         <div style="display:flex;gap:10px;margin-bottom:16px;">
@@ -963,7 +963,7 @@ export default function App() {
           <p style="margin:0;line-height:1.9;color:#374151;font-size:14px;white-space:pre-wrap;">${weeklyRes}</p>
         </div>`:""}
         <div style="margin-top:20px;padding-top:14px;border-top:1px solid #f1f5f9;text-align:center;font-size:10px;color:#94a3b8;">
-          Sue Reading Academy - Academy Report System - ${today}
+          Sue Reading Academy · Academy Report System · ${today}
         </div>
       </div>`;
     printHtml(html, `Weekly Report - ${student} W${wIdx+1}`);
@@ -980,9 +980,9 @@ export default function App() {
     const html = `
       <div style="max-width:600px;margin:0 auto;font-family:Noto Sans KR,sans-serif;">
         <div style="background:linear-gradient(135deg,#8b5cf6,#6366f1,#3b82f6);color:#fff;padding:20px 24px;border-radius:12px;margin-bottom:20px;">
-          <div style="font-size:11px;letter-spacing:2px;opacity:0.8;margin-bottom:4px;">Sue Reading Academy - Monthly Report</div>
+          <div style="font-size:11px;letter-spacing:2px;opacity:0.8;margin-bottom:4px;">Sue Reading Academy · Monthly Report</div>
           <div style="font-size:22px;font-weight:800;">🏆 Monthly Report</div>
-          <div style="font-size:14px;margin-top:6px;opacity:0.9;">${team} Team - ${student}</div>
+          <div style="font-size:14px;margin-top:6px;opacity:0.9;">${team} Team · ${student}</div>
         </div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;">
           <div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:10px;padding:14px;text-align:center;">
@@ -1016,7 +1016,7 @@ export default function App() {
           <p style="margin:0;line-height:1.9;color:#374151;font-size:14px;white-space:pre-wrap;">${monthlyRes}</p>
         </div>`:""}
         <div style="margin-top:20px;padding-top:14px;border-top:1px solid #f1f5f9;text-align:center;font-size:10px;color:#94a3b8;">
-          Sue Reading Academy - Academy Report System - ${today}
+          Sue Reading Academy · Academy Report System · ${today}
         </div>
       </div>`;
     printHtml(html, `Monthly Report - ${student}`);
@@ -1031,7 +1031,7 @@ export default function App() {
   if (!currentUser) return <LoginScreen onLogin={handleLogin} onAdminLogin={handleAdminLogin}/>;
 
   return (
-    <div style={{ minHeight:"100vh",background:"linear-gradient(150deg,#f0f4ff 0%,#fdf4ff 50%,#f0fdf9 100%)",fontFamily:"Noto Sans KR,sans-serif",paddingBottom:60 }}>
+    <div style={{ minHeight:"100vh",background:"linear-gradient(150deg,#f0f4ff 0%,#fdf4ff 50%,#f0fdf9 100%)",fontFamily:"'Noto Sans KR',sans-serif",paddingBottom:60 }}>
       {showAdminPanel && <AdminPanel teams={teams} onSave={handleAdminSave} onClose={()=>setShowAdminPanel(false)}/>}
       {showAnniPanel  && <AnniPanel  teams={teams} onSave={handleAnniSave}  onClose={()=>setShowAnniPanel(false)}/>}
       {showChartPanel && <StudentChart teams={teams} onClose={()=>setShowChartPanel(false)}/>}
@@ -1052,36 +1052,36 @@ export default function App() {
           </div>
           <div style={{ marginLeft:"auto",display:"flex",gap:8,alignItems:"center",flexWrap:"wrap" }}>
             <div style={{ display:"flex",alignItems:"center",gap:6,background:"#f0f4ff",border:"1.5px solid #c7d2fe",borderRadius:20,padding:"5px 14px" }}>
-              <span style={{ fontSize:11,color:"#6366f1",fontWeight:700,fontFamily:"DM Mono,monospace" }}>
+              <span style={{ fontSize:11,color:"#6366f1",fontWeight:700,fontFamily:"'DM Mono',monospace" }}>
                 {isAdmin ? "👑 ADMIN" : `👩‍🏫 ${currentUser.name.toUpperCase()}`}
               </span>
             </div>
             {isManager && (
-              <button onClick={()=>setShowAnniPanel(true)} style={{ background:"#f0fdf4",border:"1.5px solid #bbf7d0",borderRadius:20,padding:"5px 14px",fontSize:11,color:"#10b981",cursor:"pointer",fontWeight:700,fontFamily:"DM Mono,monospace" }}>
+              <button onClick={()=>setShowAnniPanel(true)} style={{ background:"#f0fdf4",border:"1.5px solid #bbf7d0",borderRadius:20,padding:"5px 14px",fontSize:11,color:"#10b981",cursor:"pointer",fontWeight:700,fontFamily:"'DM Mono',monospace" }}>
                 👩‍🏫 Class Mgmt
               </button>
             )}
             {isManager && (
-              <button onClick={()=>setShowChartPanel(true)} style={{ background:"#eff6ff",border:"1.5px solid #bfdbfe",borderRadius:20,padding:"5px 14px",fontSize:11,color:"#3b82f6",cursor:"pointer",fontWeight:700,fontFamily:"DM Mono,monospace" }}>
+              <button onClick={()=>setShowChartPanel(true)} style={{ background:"#eff6ff",border:"1.5px solid #bfdbfe",borderRadius:20,padding:"5px 14px",fontSize:11,color:"#3b82f6",cursor:"pointer",fontWeight:700,fontFamily:"'DM Mono',monospace" }}>
                 📋 Student Chart
               </button>
             )}
             {isAdmin && (
-              <button onClick={()=>setShowAdminPanel(true)} style={{ background:"#f8fafc",border:"1.5px solid #e2e8f0",borderRadius:20,padding:"5px 14px",fontSize:11,color:"#64748b",cursor:"pointer",fontWeight:700,fontFamily:"DM Mono,monospace" }}>
+              <button onClick={()=>setShowAdminPanel(true)} style={{ background:"#f8fafc",border:"1.5px solid #e2e8f0",borderRadius:20,padding:"5px 14px",fontSize:11,color:"#64748b",cursor:"pointer",fontWeight:700,fontFamily:"'DM Mono',monospace" }}>
                 ⚙️ Admin
               </button>
             )}
             {syncing && (
               <div style={{ display:"flex",alignItems:"center",gap:6,background:"#eff6ff",border:"1.5px solid #bfdbfe",borderRadius:20,padding:"5px 14px" }}>
                 <div style={{ width:14,height:14,borderRadius:"50%",border:"2px solid #3b82f6",borderTopColor:"transparent",animation:"spin .7s linear infinite" }}/>
-                <span style={{ fontSize:11,color:"#3b82f6",fontWeight:700,fontFamily:"DM Mono,monospace" }}>SYNCING</span>
+                <span style={{ fontSize:11,color:"#3b82f6",fontWeight:700,fontFamily:"'DM Mono',monospace" }}>SYNCING</span>
               </div>
             )}
             <div style={{ display:"flex",alignItems:"center",gap:6,background:"#f0fdf4",border:"1.5px solid #bbf7d0",borderRadius:20,padding:"5px 14px" }}>
               <div style={{ width:7,height:7,borderRadius:"50%",background:"#10b981",boxShadow:"0 0 6px #10b98160" }}/>
-              <span style={{ fontSize:11,color:"#10b981",fontWeight:700,fontFamily:"DM Mono,monospace" }}>AI ON</span>
+              <span style={{ fontSize:11,color:"#10b981",fontWeight:700,fontFamily:"'DM Mono',monospace" }}>AI ON</span>
             </div>
-            <button onClick={handleLogout} style={{ background:"#fff0f5",border:"1.5px solid #fecdd3",borderRadius:20,padding:"5px 14px",fontSize:11,color:"#f43f7a",cursor:"pointer",fontWeight:700,fontFamily:"DM Mono,monospace" }}>
+            <button onClick={handleLogout} style={{ background:"#fff0f5",border:"1.5px solid #fecdd3",borderRadius:20,padding:"5px 14px",fontSize:11,color:"#f43f7a",cursor:"pointer",fontWeight:700,fontFamily:"'DM Mono',monospace" }}>
               Logout
             </button>
           </div>
@@ -1091,22 +1091,22 @@ export default function App() {
       <div style={{ maxWidth:780,margin:"0 auto",padding:"24px 16px",animation:"fadeUp .5s ease" }}>
         {/* Select Team */}
         <div style={{ background:"#fff",borderRadius:20,border:"1.5px solid #f1f5f9",padding:"20px 22px",marginBottom:12,boxShadow:"0 2px 12px #00000006" }}>
-          <div style={{ fontSize:11,fontWeight:700,color:"#94a3b8",letterSpacing:1.5,marginBottom:12,fontFamily:"DM Mono,monospace" }}>SELECT TEAM</div>
+          <div style={{ fontSize:11,fontWeight:700,color:"#94a3b8",letterSpacing:1.5,marginBottom:12,fontFamily:"'DM Mono',monospace" }}>SELECT TEAM</div>
           <div style={{ display:"flex",gap:8,flexWrap:"wrap" }}>
             {Object.keys(teams).map(t=>{
               const on=t===team; const c=teamColorMap[t]||TEAM_COLOR_LIST[0];
-              return <button key={t} onClick={()=>changeTeam(t)} style={{ padding:"9px 20px",borderRadius:14,border:on?`2px solid ${c.accent}`:"2px solid #f1f5f9",background:on?c.light:"#fafafa",color:on?c.accent:"#94a3b8",fontWeight:on?800:500,fontSize:13,cursor:"pointer",transition:"all .18s",fontFamily:"Noto Sans KR,sans-serif",boxShadow:on?`0 4px 14px ${c.accent}20`:"none" }}>{t} Team</button>;
+              return <button key={t} onClick={()=>changeTeam(t)} style={{ padding:"9px 20px",borderRadius:14,border:on?`2px solid ${c.accent}`:"2px solid #f1f5f9",background:on?c.light:"#fafafa",color:on?c.accent:"#94a3b8",fontWeight:on?800:500,fontSize:13,cursor:"pointer",transition:"all .18s",fontFamily:"'Noto Sans KR',sans-serif",boxShadow:on?`0 4px 14px ${c.accent}20`:"none" }}>{t} Team</button>;
             })}
           </div>
         </div>
 
         {/* Select Student */}
         <div style={{ background:"#fff",borderRadius:20,border:`2px solid ${tc.border}`,padding:"20px 22px",marginBottom:12,boxShadow:`0 4px 16px ${tc.accent}08` }}>
-          <div style={{ fontSize:11,fontWeight:700,color:"#94a3b8",letterSpacing:1.5,marginBottom:12,fontFamily:"DM Mono,monospace" }}>SELECT STUDENT</div>
+          <div style={{ fontSize:11,fontWeight:700,color:"#94a3b8",letterSpacing:1.5,marginBottom:12,fontFamily:"'DM Mono',monospace" }}>SELECT STUDENT</div>
           <div style={{ display:"flex",gap:8,flexWrap:"wrap" }}>
             {(teams[team]||[]).map(s=>{
               const on=s===student;
-              return <button key={s} onClick={()=>changeStudent(s)} style={{ padding:"9px 20px",borderRadius:14,border:on?`2px solid ${tc.accent}`:"2px solid #f1f5f9",background:on?tc.accent:"#fafafa",color:on?"#fff":"#94a3b8",fontWeight:on?800:500,fontSize:13,cursor:"pointer",transition:"all .18s",fontFamily:"Noto Sans KR,sans-serif",boxShadow:on?`0 4px 14px ${tc.accent}30`:"none" }}>{s}</button>;
+              return <button key={s} onClick={()=>changeStudent(s)} style={{ padding:"9px 20px",borderRadius:14,border:on?`2px solid ${tc.accent}`:"2px solid #f1f5f9",background:on?tc.accent:"#fafafa",color:on?"#fff":"#94a3b8",fontWeight:on?800:500,fontSize:13,cursor:"pointer",transition:"all .18s",fontFamily:"'Noto Sans KR',sans-serif",boxShadow:on?`0 4px 14px ${tc.accent}30`:"none" }}>{s}</button>;
             })}
           </div>
         </div>
@@ -1114,7 +1114,7 @@ export default function App() {
         {/* Tabs */}
         <div style={{ display:"flex",gap:3,marginBottom:20,background:"#f1f5f9",borderRadius:16,padding:4 }}>
           {[["weekly","📅 Weekly Report"],["monthly","📊 Monthly Report"]].map(([k,label])=>(
-            <button key={k} onClick={()=>setTab(k)} style={{ flex:1,padding:"13px",borderRadius:13,border:"none",background:tab===k?"#fff":"transparent",color:tab===k?"#6366f1":"#94a3b8",fontWeight:tab===k?800:500,fontSize:14,cursor:"pointer",transition:"all .2s",fontFamily:"Noto Sans KR,sans-serif",boxShadow:tab===k?"0 2px 10px #0000000e":"none" }}>{label}</button>
+            <button key={k} onClick={()=>setTab(k)} style={{ flex:1,padding:"13px",borderRadius:13,border:"none",background:tab===k?"#fff":"transparent",color:tab===k?"#6366f1":"#94a3b8",fontWeight:tab===k?800:500,fontSize:14,cursor:"pointer",transition:"all .2s",fontFamily:"'Noto Sans KR',sans-serif",boxShadow:tab===k?"0 2px 10px #0000000e":"none" }}>{label}</button>
           ))}
         </div>
 
@@ -1122,12 +1122,12 @@ export default function App() {
         {tab==="weekly" && (
           <div style={{ animation:"fadeUp .35s ease" }}>
             <div style={{ background:"#fff",borderRadius:18,border:"1.5px solid #f1f5f9",padding:"18px 20px",marginBottom:14,boxShadow:"0 2px 10px #00000006" }}>
-              <div style={{ fontSize:11,fontWeight:700,color:"#94a3b8",letterSpacing:1.5,marginBottom:12,fontFamily:"DM Mono,monospace" }}>SELECT WEEK</div>
+              <div style={{ fontSize:11,fontWeight:700,color:"#94a3b8",letterSpacing:1.5,marginBottom:12,fontFamily:"'DM Mono',monospace" }}>SELECT WEEK</div>
               <div style={{ display:"flex",gap:8,flexWrap:"wrap" }}>
                 {weeks.map((_,i)=>{
                   const on=i===wIdx; const has=weeks[i].ww||weeks[i].hw||weeks[i].attitude;
                   return (
-                    <button key={i} onClick={()=>setWIdx(i)} style={{ width:48,height:48,borderRadius:14,border:on?"2px solid #6366f1":"2px solid #f1f5f9",background:on?"#6366f1":has?"#fafbff":"#fafafa",color:on?"#fff":has?"#6366f1":"#94a3b8",fontWeight:700,fontSize:13,cursor:"pointer",fontFamily:"DM Mono,monospace",transition:"all .18s",boxShadow:on?"0 4px 14px #6366f130":"none",position:"relative" }}>
+                    <button key={i} onClick={()=>setWIdx(i)} style={{ width:48,height:48,borderRadius:14,border:on?"2px solid #6366f1":"2px solid #f1f5f9",background:on?"#6366f1":has?"#fafbff":"#fafafa",color:on?"#fff":has?"#6366f1":"#94a3b8",fontWeight:700,fontSize:13,cursor:"pointer",fontFamily:"'DM Mono',monospace",transition:"all .18s",boxShadow:on?"0 4px 14px #6366f130":"none",position:"relative" }}>
                       W{i+1}
                       {has&&!on&&<div style={{ position:"absolute",top:7,right:7,width:6,height:6,borderRadius:"50%",background:"#10b981" }}/>}
                     </button>
@@ -1138,10 +1138,10 @@ export default function App() {
             </div>
             <WeekCard weekNum={wIdx+1} data={weeks[wIdx]} onChange={d=>updateWeek(wIdx,d)}/>
             <div style={{ display:"flex",gap:10,marginTop:16 }}>
-              <button onClick={saveWeekData} disabled={syncing} style={{ flex:"0 0 auto",padding:"16px 20px",background:syncing?"#f1f5f9":"#fff",color:syncing?"#94a3b8":"#6366f1",border:"2px solid #e0e7ff",borderRadius:16,fontSize:14,fontWeight:700,cursor:syncing?"not-allowed":"pointer",fontFamily:"Noto Sans KR,sans-serif",transition:"all .2s" }}>
+              <button onClick={saveWeekData} disabled={syncing} style={{ flex:"0 0 auto",padding:"16px 20px",background:syncing?"#f1f5f9":"#fff",color:syncing?"#94a3b8":"#6366f1",border:"2px solid #e0e7ff",borderRadius:16,fontSize:14,fontWeight:700,cursor:syncing?"not-allowed":"pointer",fontFamily:"'Noto Sans KR',sans-serif",transition:"all .2s" }}>
                 {syncing?"Saving...":"💾 Save to Sheet"}
               </button>
-              <button onClick={genWeekly} disabled={loading} style={{ flex:1,padding:"16px",background:loading?"#f1f5f9":"linear-gradient(135deg,#6366f1,#8b5cf6)",color:loading?"#94a3b8":"#fff",border:"none",borderRadius:16,fontSize:15,fontWeight:800,cursor:loading?"not-allowed":"pointer",fontFamily:"Noto Sans KR,sans-serif",transition:"all .2s",boxShadow:loading?"none":"0 8px 24px #6366f130" }}>
+              <button onClick={genWeekly} disabled={loading} style={{ flex:1,padding:"16px",background:loading?"#f1f5f9":"linear-gradient(135deg,#6366f1,#8b5cf6)",color:loading?"#94a3b8":"#fff",border:"none",borderRadius:16,fontSize:15,fontWeight:800,cursor:loading?"not-allowed":"pointer",fontFamily:"'Noto Sans KR',sans-serif",transition:"all .2s",boxShadow:loading?"none":"0 8px 24px #6366f130" }}>
                 {loading?"✨ Generating...":`✨ ${student} Weekly Feedback + Save`}
               </button>
             </div>
@@ -1155,7 +1155,7 @@ export default function App() {
         {tab==="monthly" && (
           <div style={{ animation:"fadeUp .35s ease" }}>
             <div style={{ background:"#fff",borderRadius:20,border:"1.5px solid #f1f5f9",padding:"22px",marginBottom:14,boxShadow:"0 2px 12px #00000006" }}>
-              <div style={{ fontSize:11,fontWeight:700,color:"#94a3b8",letterSpacing:1.5,marginBottom:16,fontFamily:"DM Mono,monospace" }}>MONTHLY STATS — {student}</div>
+              <div style={{ fontSize:11,fontWeight:700,color:"#94a3b8",letterSpacing:1.5,marginBottom:16,fontFamily:"'DM Mono',monospace" }}>MONTHLY STATS — {student}</div>
               <div style={{ display:"flex",gap:10,flexWrap:"wrap" }}>
                 <StatCard icon="✅" label="WW Pass"    value={wwPass}   color="#10b981"/>
                 <StatCard icon="⚠️" label="WW Retest"  value={wwTotal-wwPass} color="#f59e0b"/>
@@ -1166,13 +1166,13 @@ export default function App() {
               </div>
             </div>
             <div style={{ background:"#fff",borderRadius:20,border:"1.5px solid #f1f5f9",padding:"22px",marginBottom:14,boxShadow:"0 2px 12px #00000006" }}>
-              <div style={{ fontSize:11,fontWeight:700,color:"#94a3b8",letterSpacing:1.5,marginBottom:14,fontFamily:"DM Mono,monospace" }}>WEEKLY SUMMARY</div>
+              <div style={{ fontSize:11,fontWeight:700,color:"#94a3b8",letterSpacing:1.5,marginBottom:14,fontFamily:"'DM Mono',monospace" }}>WEEKLY SUMMARY</div>
               <div style={{ display:"grid",gap:8 }}>
                 {weeks.map((w,i)=>{
                   const has=w.ww||w.hw||w.attitude;
                   return (
                     <div key={i} style={{ display:"flex",alignItems:"center",gap:10,padding:"12px 14px",borderRadius:14,background:has?"#fafbff":"#fafafa",border:`1.5px solid ${has?"#e0e7ff":"#f1f5f9"}` }}>
-                      <div style={{ width:30,height:30,borderRadius:9,background:has?"linear-gradient(135deg,#6366f1,#8b5cf6)":"#f1f5f9",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:700,color:has?"#fff":"#94a3b8",fontFamily:"DM Mono,monospace",flexShrink:0 }}>W{i+1}</div>
+                      <div style={{ width:30,height:30,borderRadius:9,background:has?"linear-gradient(135deg,#6366f1,#8b5cf6)":"#f1f5f9",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:700,color:has?"#fff":"#94a3b8",fontFamily:"'DM Mono',monospace",flexShrink:0 }}>W{i+1}</div>
                       {has?(
                         <div style={{ display:"flex",gap:6,flexWrap:"wrap",flex:1 }}>
                           {w.ww&&<span style={{ padding:"3px 10px",borderRadius:8,fontSize:11,fontWeight:700,background:WW_C[w.ww]+"18",color:WW_C[w.ww],border:`1px solid ${WW_C[w.ww]}30` }}>{w.ww}</span>}
@@ -1181,15 +1181,15 @@ export default function App() {
                           {w.grammar&&<span style={{ fontSize:11,color:"#94a3b8" }}>📐 {w.grammar}</span>}
                         </div>
                       ):(
-                        <span style={{ color:"#cbd5e1",fontSize:12,fontFamily:"Noto Sans KR,sans-serif" }}>No data</span>
+                        <span style={{ color:"#cbd5e1",fontSize:12,fontFamily:"'Noto Sans KR',sans-serif" }}>No data</span>
                       )}
-                      <button onClick={()=>{setTab("weekly");setWIdx(i);}} style={{ background:"#f8fafc",border:"1.5px solid #e2e8f0",color:"#6366f1",fontSize:11,padding:"5px 10px",borderRadius:8,cursor:"pointer",fontWeight:600,fontFamily:"Noto Sans KR,sans-serif",flexShrink:0 }}>Edit</button>
+                      <button onClick={()=>{setTab("weekly");setWIdx(i);}} style={{ background:"#f8fafc",border:"1.5px solid #e2e8f0",color:"#6366f1",fontSize:11,padding:"5px 10px",borderRadius:8,cursor:"pointer",fontWeight:600,fontFamily:"'Noto Sans KR',sans-serif",flexShrink:0 }}>Edit</button>
                     </div>
                   );
                 })}
               </div>
             </div>
-            <button onClick={genMonthly} disabled={loading} style={{ width:"100%",padding:"16px",background:loading?"#f1f5f9":"linear-gradient(135deg,#8b5cf6,#6366f1,#3b82f6)",color:loading?"#94a3b8":"#fff",border:"none",borderRadius:16,fontSize:15,fontWeight:800,cursor:loading?"not-allowed":"pointer",fontFamily:"Noto Sans KR,sans-serif",transition:"all .2s",boxShadow:loading?"none":"0 8px 24px #8b5cf630" }}>
+            <button onClick={genMonthly} disabled={loading} style={{ width:"100%",padding:"16px",background:loading?"#f1f5f9":"linear-gradient(135deg,#8b5cf6,#6366f1,#3b82f6)",color:loading?"#94a3b8":"#fff",border:"none",borderRadius:16,fontSize:15,fontWeight:800,cursor:loading?"not-allowed":"pointer",fontFamily:"'Noto Sans KR',sans-serif",transition:"all .2s",boxShadow:loading?"none":"0 8px 24px #8b5cf630" }}>
               {loading?"🏆 Generating...":`🏆 ${student} Monthly Report + Save`}
             </button>
             <div style={{ marginTop:16 }}>
@@ -1201,7 +1201,7 @@ export default function App() {
         {/* Bottom Guide */}
         <div style={{ marginTop:20,padding:"14px 18px",background:"#fffbeb",borderRadius:14,border:"1.5px solid #fde68a",display:"flex",gap:10,alignItems:"flex-start" }}>
           <span style={{ fontSize:16,flexShrink:0 }}>💡</span>
-          <span style={{ fontSize:12,color:"#92400e",fontFamily:"Noto Sans KR,sans-serif",lineHeight:1.7 }}>
+          <span style={{ fontSize:12,color:"#92400e",fontFamily:"'Noto Sans KR',sans-serif",lineHeight:1.7 }}>
             Data is <strong>auto-saved to Google Sheets</strong>. Previous data loads automatically when selecting a student.
             Generated feedback can be <strong>copied using the copy button</strong> and pasted to KakaoTalk.
             {isManager && " Use the Class Mgmt button above to edit classes/students."}
