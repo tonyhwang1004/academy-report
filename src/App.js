@@ -528,7 +528,7 @@ function StudentChart({ teams, onClose }) {
     const tk = chart.tasks.filter(x=>x.trim());
     const hw = chart.homework.filter(x=>x.trim());
     const line = "――――――――――――――――――――――";
-    return `📋 Student Chart\n${line}\n👤 이름 : ${chart.name||"(이름)"}\n📚 교재 : ${chart.mainBook||"(교재)"}\n📅 날짜 : ${chart.date||"(날짜)"}\n${line}\n\n🎧 Intensive Listening\n  · ${chart.listening1||"—"}\n  · ${chart.listening2||"—"}\n${line}\n\n🗣 Pronunciation &\n   Comprehension Check\n  ${chart.pronunciation||"—"}\n${line}\n\n✅ Today's Task\n${tk.length?tk.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}\n${line}\n\n🏠 Home Connection\n   (Unfinished Work)\n${hw.length?hw.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}\n${line}${aiComment?`\n\n💬 선생님 코멘트\n${line}\n  ${aiComment}\n${line}`:""}`;
+    return `📋 Student Chart\n${line}\n👤 이름 : ${chart.name||"(이름)"}\n📚 교재 : ${chart.mainBook||"(교재)"}\n📅 날짜 : ${chart.date||"(날짜)"}\n${line}\n\n🎧 Intensive Listening\n  · ${chart.listening1||"—"}\n  · ${chart.listening2||"—"}\n${line}\n\n🗣 Pronunciation &\n   Comprehension Check\n  ${chart.pronunciation||"—"}\n${line}\n\n✅ Today's Task\n${tk.length?tk.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}\n${line}\n\n🏠 Home Connection\n${hw.length?hw.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}\n${line}${aiComment?`\n\n💬 선생님 코멘트\n${line}\n  ${aiComment}\n${line}`:""}`;
   };
 
   // 🖨️ Student Chart 인쇄
@@ -572,7 +572,7 @@ function StudentChart({ teams, onClose }) {
           ${tk.length?tk.map((x,i)=>`<div style="font-size:13px;color:#1e1b4b;margin-bottom:4px;"><span style="color:#10b981;font-weight:700;">${i+1}.</span> ${x}</div>`).join(""):'<div style="font-size:13px;color:#94a3b8;">—</div>'}
         </div>
         <div style="background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:14px 16px;margin-bottom:${aiComment?'12px':'0'};">
-          <div style="font-size:10px;color:#f59e0b;font-weight:700;letter-spacing:1px;margin-bottom:8px;">🏠 HOME CONNECTION (UNFINISHED WORK)</div>
+          <div style="font-size:10px;color:#f59e0b;font-weight:700;letter-spacing:1px;margin-bottom:8px;">🏠 HOME CONNECTION</div>
           ${hw.length?hw.map((x,i)=>`<div style="font-size:13px;color:#1e1b4b;margin-bottom:4px;"><span style="color:#f59e0b;font-weight:700;">${i+1}.</span> ${x}</div>`).join(""):'<div style="font-size:13px;color:#94a3b8;">—</div>'}
         </div>
         ${aiComment?`
@@ -749,7 +749,7 @@ Home Connection: ${hw.join(", ")||"—"}
             ))}
           </div>
           <div style={{ background:"#f8fafc",borderRadius:16,border:"1.5px solid #f1f5f9",padding:"14px 16px",marginBottom:16 }}>
-            <div style={{ fontSize:10,fontWeight:700,color:"#f59e0b",marginBottom:8,fontFamily:"'DM Mono',monospace",letterSpacing:1 }}>🏠 HOME CONNECTION (UNFINISHED WORK)</div>
+            <div style={{ fontSize:10,fontWeight:700,color:"#f59e0b",marginBottom:8,fontFamily:"'DM Mono',monospace",letterSpacing:1 }}>🏠 HOME CONNECTION</div>
             {chart.homework.map((v,i)=>(
               <div key={i} style={{ display:"flex",alignItems:"center",gap:8,marginBottom:i<2?8:0 }}>
                 <span style={{ fontSize:12,fontWeight:700,color:"#f59e0b",fontFamily:"'DM Mono',monospace",width:16,flexShrink:0 }}>{i+1}.</span>
