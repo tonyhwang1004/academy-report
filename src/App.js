@@ -588,7 +588,7 @@ ${hw.length?hw.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}${aiComment?`
           ${tk.length?tk.map((x,i)=>`<div style="font-size:13px;color:#1e1b4b;margin-bottom:4px;"><span style="color:#10b981;font-weight:700;">${i+1}.</span> ${x}</div>`).join(""):'<div style="font-size:13px;color:#94a3b8;">—</div>'}
         </div>
         <div style="background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:14px 16px;margin-bottom:${aiComment?'12px':'0'};">
-          <div style="font-size:10px;color:#f59e0b;font-weight:700;letter-spacing:1px;margin-bottom:8px;">🏠 HOME CONNECTION</div>
+          <div style="font-size:10px;color:#f59e0b;font-weight:700;letter-spacing:1px;margin-bottom:8px;">🏠 HOME CONNECTION / UNFINISHED WORK</div>
           ${hw.length?hw.map((x,i)=>`<div style="font-size:13px;color:#1e1b4b;margin-bottom:4px;"><span style="color:#f59e0b;font-weight:700;">${i+1}.</span> ${x}</div>`).join(""):'<div style="font-size:13px;color:#94a3b8;">—</div>'}
         </div>
         ${aiComment?`
@@ -655,7 +655,7 @@ ${hw.length?hw.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}${aiComment?`
         \${tk.length?tk.map((x,i)=>\`<div style="font-size:12px;color:#1e1b4b;margin-bottom:3px;"><span style="color:#10b981;font-weight:700;">\${i+1}.</span> \${x}</div>\`).join(""):'<div style="font-size:12px;color:#94a3b8;">—</div>'}
       </div>
       <div style="background:#fffbeb;border:1.5px solid #fde68a;border-radius:8px;padding:12px 14px;margin-bottom:\${aiComment?'10px':'0'};">
-        <div style="font-size:9px;color:#f59e0b;font-weight:700;letter-spacing:1px;margin-bottom:6px;">🏠 HOME CONNECTION</div>
+        <div style="font-size:9px;color:#f59e0b;font-weight:700;letter-spacing:1px;margin-bottom:6px;">🏠 HOME CONNECTION / UNFINISHED WORK</div>
         \${hw.length?hw.map((x,i)=>\`<div style="font-size:12px;color:#1e1b4b;margin-bottom:3px;"><span style="color:#f59e0b;font-weight:700;">\${i+1}.</span> \${x}</div>\`).join(""):'<div style="font-size:12px;color:#94a3b8;">—</div>'}
       </div>
       \${aiComment?\`<div style="background:linear-gradient(135deg,#eff6ff,#faf5ff);border:1.5px solid #e0e7ff;border-radius:8px;padding:12px 14px;">
@@ -765,7 +765,7 @@ Home Connection: ${hw.join(", ")||"—"}
             ))}
           </div>
           <div style={{ background:"#f8fafc",borderRadius:16,border:"1.5px solid #f1f5f9",padding:"14px 16px",marginBottom:16 }}>
-            <div style={{ fontSize:10,fontWeight:700,color:"#f59e0b",marginBottom:8,fontFamily:"'DM Mono',monospace",letterSpacing:1 }}>🏠 HOME CONNECTION</div>
+            <div style={{ fontSize:10,fontWeight:700,color:"#f59e0b",marginBottom:8,fontFamily:"'DM Mono',monospace",letterSpacing:1 }}>🏠 HOME CONNECTION / UNFINISHED WORK</div>
             {chart.homework.map((v,i)=>(
               <div key={i} style={{ display:"flex",alignItems:"center",gap:8,marginBottom:i<2?8:0 }}>
                 <span style={{ fontSize:12,fontWeight:700,color:"#f59e0b",fontFamily:"'DM Mono',monospace",width:16,flexShrink:0 }}>{i+1}.</span>
