@@ -648,7 +648,7 @@ Home Connection: ${hw.join(", ")||"—"}
             })}
           </div>
           <div style={{ display:"grid",gridTemplateColumns:"1fr 2fr 1fr",gap:10,marginBottom:14 }}>
-            {[{label:"Name",key:"name",ph:"학생 이름"},{label:"Main Book Title",key:"mainBook",ph:"교재명"},{label:"Date",key:"date",ph:"날짜",type:"date"}].map(({label,key,ph,type})=>(
+            {[{label:"Name",key:"name",ph:"Student Name"},{label:"Book Title",key:"mainBook",ph:"Book Title"},{label:"Date",key:"date",ph:"Date",type:"date"}].map(({label,key,ph,type})=>(
               <div key={key}>
                 <div style={{ fontSize:10,fontWeight:700,color:"#94a3b8",marginBottom:5,fontFamily:"'DM Mono',monospace" }}>{label}</div>
                 <input type={type||"text"} value={chart[key]} onChange={e=>upd(key,e.target.value)} placeholder={ph}
