@@ -527,8 +527,24 @@ function StudentChart({ teams, onClose }) {
   const buildText = () => {
     const tk = chart.tasks.filter(x=>x.trim());
     const hw = chart.homework.filter(x=>x.trim());
-    const line = "――――――――――――――――――――――";
-    return `📋 Student Chart\n${line}\n👤 이름 : ${chart.name||"(이름)"}\n📚 교재 : ${chart.mainBook||"(교재)"}\n📅 날짜 : ${chart.date||"(날짜)"}\n${line}\n\n🎧 Intensive Listening\n  · ${chart.listening1||"—"}\n  · ${chart.listening2||"—"}\n${line}\n\n🗣 Pronunciation &\n   Comprehension Check\n  ${chart.pronunciation||"—"}\n${line}\n\n✅ Today's Task\n${tk.length?tk.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}\n${line}\n\n🏠 Home Connection\n${hw.length?hw.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}\n${line}${aiComment?`\n\n💬 선생님 코멘트\n${line}\n  ${aiComment}\n${line}`:""}`;
+    return `📋 Student Chart
+👤 ${chart.name||"(이름)"}  /  📚 ${chart.mainBook||"(교재)"}  /  📅 ${chart.date||"(날짜)"}
+
+🎧 Intensive Listening
+  · ${chart.listening1||"—"}
+  · ${chart.listening2||"—"}
+
+🗣 Pronunciation & Comprehension Check
+  ${chart.pronunciation||"—"}
+
+✅ Today's Task
+${tk.length?tk.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}
+
+🏠 Home Connection
+${hw.length?hw.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}${aiComment?`
+
+💬 선생님 코멘트
+  ${aiComment}`:""}`;
   };
 
   // 🖨️ Student Chart 인쇄
