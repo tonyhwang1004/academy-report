@@ -52,23 +52,30 @@ function printHtml(html, title) {
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap');
       * { box-sizing: border-box; margin: 0; padding: 0; }
-      body { font-family: 'Noto Sans KR', sans-serif; background: #fff; color: #1e1b4b; padding: 20px 40px; max-width: 780px; margin: 0 auto; }
+      body { font-family: 'Noto Sans KR', sans-serif; background: #f8fafc; color: #1e1b4b; }
+      .page { width: 210mm; min-height: 297mm; margin: 0 auto; background: #fff; padding: 16mm 14mm; }
       @media print {
-        body { padding: 0; max-width: 100%; }
+        body { background: #fff; }
         .no-print { display: none !important; }
-        @page { size: A4 portrait; margin: 12mm 15mm; }
-        div { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .page { width: 100%; padding: 0; margin: 0; box-shadow: none; }
+        @page { size: A4 portrait; margin: 14mm 12mm; }
+        * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      }
+      @media screen {
+        body { padding: 20px; }
+        .page { box-shadow: 0 4px 24px #00000015; border-radius: 4px; }
       }
       .print-btn {
-        display: block; margin: 0 auto 24px;
-        padding: 12px 32px; background: #6366f1; color: #fff;
+        display: block; margin: 16px auto;
+        padding: 12px 40px; background: #6366f1; color: #fff;
         border: none; border-radius: 10px; font-size: 15px;
         font-weight: 700; cursor: pointer; font-family: 'Noto Sans KR', sans-serif;
+        box-shadow: 0 4px 14px #6366f130;
       }
     </style>
   </head><body>
     <button class="no-print print-btn" onclick="window.print()">🖨️ 인쇄하기</button>
-    ${html}
+    <div class="page">${html}</div>
   </body></html>`);
   win.document.close();
 }
@@ -530,10 +537,12 @@ function StudentChart({ teams, onClose }) {
     const hw = chart.homework.filter(x=>x.trim());
     const today = chart.date || new Date().toLocaleDateString("ko-KR");
     const html = `
-      <div style="max-width:600px;margin:0 auto;font-family:'Noto Sans KR',sans-serif;">
-        <div style="background:linear-gradient(135deg,#10b981,#3b82f6);color:#fff;padding:20px 24px;border-radius:12px;margin-bottom:20px;">
-          <div style="font-size:11px;letter-spacing:2px;opacity:0.8;margin-bottom:4px;">수리딩어학원</div>
-          <div style="font-size:22px;font-weight:800;">📋 Student Chart</div>
+      <div style="font-family:'Noto Sans KR',sans-serif;">
+        <div style="background:linear-gradient(135deg,#10b981,#3b82f6);color:#fff;padding:16px 20px;border-radius:10px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <div style="font-size:10px;letter-spacing:2px;opacity:0.75;margin-bottom:3px;font-weight:500;">수리딩어학원</div>
+            <div style="font-size:20px;font-weight:800;letter-spacing:-0.5px;">📋 Student Chart</div>
+          </div>
         </div>
         <div style="display:flex;gap:12px;margin-bottom:16px;">
           <div style="flex:1;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:10px;padding:12px 16px;">
