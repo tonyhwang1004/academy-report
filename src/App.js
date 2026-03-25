@@ -625,7 +625,7 @@ ${hw.length?hw.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}${aiComment?`
     const tk = chart.tasks.filter(x=>x.trim());
     const hw = chart.homework.filter(x=>x.trim());
     const today = chart.date || new Date().toLocaleDateString("ko-KR");
-    return \`<div style="font-family:'Noto Sans KR',sans-serif;max-width:560px;">
+    return `<div style="font-family:'Noto Sans KR',sans-serif;max-width:560px;">
       <div style="background:linear-gradient(135deg,#10b981,#3b82f6);color:#fff;padding:16px 20px;border-radius:10px;margin-bottom:16px;">
         <div style="font-size:10px;letter-spacing:2px;opacity:0.75;margin-bottom:3px;">수리딩어학원</div>
         <div style="font-size:20px;font-weight:800;">📋 Student Chart</div>
