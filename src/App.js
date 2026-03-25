@@ -672,20 +672,18 @@ ${hw.length?hw.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}${aiComment?`
     setAiLoading(true);
     const tk = chart.tasks.filter(x=>x.trim());
     const hw = chart.homework.filter(x=>x.trim());
-    const prompt = `당신은 영어학원 선생님입니다. 아래 수업 기록을 바탕으로 학부모에게 보낼 따뜻하고 전문적인 코멘트를 2~3문장으로 작성해주세요.
-
-학생: ${chart.name||"학생"} / 교재: ${chart.mainBook||"미입력"} / 날짜: ${chart.date||"오늘"}
-Intensive Listening: ${chart.listening1||"-"}, ${chart.listening2||"-"}
-Pronunciation & Comprehension: ${chart.pronunciation||"-"}
-Today's Task: ${tk.join(", ")||"-"}
-Home Connection: ${hw.join(", ")||"-"}
-
-요구사항:
-- 영어로 작성
-- 학생 이름으로 시작
-- 오늘 수업 내용 간단히 언급
-- 격려와 응원으로 마무리
-- 마크다운 없이 순수 텍스트만`;
+    const prompt = [
+      "You are an English academy teacher.",
+      "Write a warm 2-3 sentence parent comment based on:",
+      "Student: " + (chart.name||"Student"),
+      "Book: " + (chart.mainBook||"N/A"),
+      "Date: " + (chart.date||"Today"),
+      "Listening: " + (chart.listening1||"-") + ", " + (chart.listening2||"-"),
+      "Pronunciation: " + (chart.pronunciation||"-"),
+      "Tasks: " + (tk.join(", ")||"-"),
+      "Homework: " + (hw.join(", ")||"-"),
+      "Requirements: Start with student name, mention today's lesson, end with encouragement. Plain text only."
+    ].join("\n");
     try {
       const url = APPS_SCRIPT_URL + "?action=generateFeedback&prompt=" + encodeURIComponent(prompt);
       const res = await fetch(url);
