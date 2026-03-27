@@ -1,15 +1,26 @@
 import { useState, useEffect } from "react";
 
+// ══════════════════════════════════════════════════════════
+// ⚙️  설정  — 배포 후 여기만 수정하세요
+// ══════════════════════════════════════════════════════════
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7j-laaG375ha--NBLuYF4lSXSYVpPefsHRWXMBbPt72q_2Yf17xgv0Sh81NwPccXcvg/exec";
 const ADMIN_PASSWORD  = "sue12345";
-const ANTHROPIC_KEY = process.env.REACT_APP_ANTHROPIC_KEY || "";
+const ANTHROPIC_KEY   = "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";
 
+// ══════════════════════════════════════════════════════════
+// 선생님 계정
+// role: "manager" → 반/학생 추가·편집 가능 (anni)
+// role: "teacher" → 리포트 작성만 (suzi, 선생님3)
+// ══════════════════════════════════════════════════════════
 const TEACHERS = [
   { id:"anni", name:"anni",     password:"anni",     role:"manager" },
   { id:"suzi", name:"suzi",     password:"suzi",     role:"teacher" },
   { id:"t3",   name:"선생님3",  password:"teacher3", role:"teacher" },
 ];
 
+// ══════════════════════════════════════════════════════════
+// 데이터 상수 (기존 그대로 — 절대 수정 금지)
+// ══════════════════════════════════════════════════════════
 const DEFAULT_TEAMS = {
   Lilly:   ["Amy","Brian","Chloe","Daniel","Emma"],
   Aster:   ["Finn","Grace","Henry","Ivy","Jack"],
@@ -41,47 +52,7 @@ const HW_C  = { Excellent:"#8b5cf6", Good:"#10b981", Average:"#f59e0b", Incomple
 const ATT_C = { "적극적":"#3b82f6","보통":"#94a3b8","소극적":"#f87171" };
 
 // ══════════════════════════════════════════════════════════
-// 🖨️ 인쇄 유틸 함수
-// ══════════════════════════════════════════════════════════
-function printHtml(html, title) {
-  const win = window.open("", "_blank");
-  win.document.write(`<!DOCTYPE html><html><head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${title}</title>
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap');
-      * { box-sizing: border-box; margin: 0; padding: 0; }
-      body { font-family: 'Noto Sans KR', sans-serif; background: #f8fafc; color: #1e1b4b; }
-      .page { width: 210mm; min-height: 297mm; margin: 0 auto; background: #fff; padding: 16mm 14mm; }
-      @media print {
-        body { background: #fff; }
-        .no-print { display: none !important; }
-        .page { width: 100%; padding: 0; margin: 0; box-shadow: none; }
-        @page { size: A4 portrait; margin: 14mm 12mm; }
-        * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-      }
-      @media screen {
-        body { padding: 20px; }
-        .page { box-shadow: 0 4px 24px #00000015; border-radius: 4px; }
-      }
-      .print-btn {
-        display: block; margin: 16px auto;
-        padding: 12px 40px; background: #6366f1; color: #fff;
-        border: none; border-radius: 10px; font-size: 15px;
-        font-weight: 700; cursor: pointer; font-family: 'Noto Sans KR', sans-serif;
-        box-shadow: 0 4px 14px #6366f130;
-      }
-    </style>
-  </head><body>
-    <button class="no-print print-btn" onclick="window.print()">🖨️ 인쇄하기</button>
-    <div class="page">${html}</div>
-  </body></html>`);
-  win.document.close();
-}
-
-// ══════════════════════════════════════════════════════════
-// API 함수들
+// API 함수들 (기존 그대로)
 // ══════════════════════════════════════════════════════════
 async function callClaude(prompt) {
   const url = APPS_SCRIPT_URL + "?action=generateFeedback&prompt=" + encodeURIComponent(prompt);
@@ -113,7 +84,7 @@ async function saveFeedback(team, student, type, text) {
 }
 
 // ══════════════════════════════════════════════════════════
-// 프롬프트 빌더
+// 프롬프트 빌더 (기존 그대로)
 // ══════════════════════════════════════════════════════════
 function buildWeeklyPrompt(team, student, week) {
   const grammarNote = week.grammar
@@ -168,7 +139,7 @@ WW Pass율: ${wwTotal>0?Math.round(wwPass/wwTotal*100):0}% (Pass ${wwPass}회 / 
 }
 
 // ══════════════════════════════════════════════════════════
-// UI 컴포넌트
+// UI 컴포넌트 (기존 그대로)
 // ══════════════════════════════════════════════════════════
 function PillGroup({ options, value, onChange, colorMap }) {
   return (
@@ -237,10 +208,7 @@ function StatCard({ label,value,color,icon }) {
   );
 }
 
-// ══════════════════════════════════════════════════════════
-// ReportBox — 🖨️ 인쇄 버튼 추가
-// ══════════════════════════════════════════════════════════
-function ReportBox({ text, loading, onCopy, onPrint, saved }) {
+function ReportBox({ text,loading,onCopy,saved }) {
   if (loading) return (
     <div style={{ background:"#f8fafc",borderRadius:18,padding:32,display:"flex",alignItems:"center",gap:14,border:"2px dashed #e2e8f0" }}>
       <div style={{ width:22,height:22,borderRadius:"50%",border:"3px solid #6366f1",borderTopColor:"transparent",animation:"spin .7s linear infinite",flexShrink:0 }}/>
@@ -256,12 +224,11 @@ function ReportBox({ text, loading, onCopy, onPrint, saved }) {
   return (
     <div style={{ background:"linear-gradient(135deg,#eff6ff,#faf5ff)",borderRadius:18,padding:26,border:"2px solid #e0e7ff",position:"relative" }}>
       <div style={{ position:"absolute",top:16,right:16,display:"flex",gap:8,alignItems:"center" }}>
-        {saved&&<span style={{ fontSize:11,color:"#10b981",fontWeight:700,fontFamily:"'DM Mono',monospace",background:"#f0fdf4",padding:"4px 10px",borderRadius:8,border:"1px solid #bbf7d0" }}>✓ 저장됨</span>}
-        <button onClick={onPrint} style={{ background:"#f0fdf4",color:"#10b981",border:"1.5px solid #bbf7d0",borderRadius:10,padding:"6px 14px",fontSize:12,fontFamily:"'Noto Sans KR',sans-serif",cursor:"pointer",fontWeight:700 }}>🖨️ 인쇄</button>
+        {saved&&<span style={{ fontSize:11,color:"#10b981",fontWeight:700,fontFamily:"'DM Mono',monospace",background:"#f0fdf4",padding:"4px 10px",borderRadius:8,border:"1px solid #bbf7d0" }}>✓ 시트 저장됨</span>}
         <button onClick={onCopy} style={{ background:"#6366f1",color:"#fff",border:"none",borderRadius:10,padding:"6px 14px",fontSize:12,fontFamily:"'Noto Sans KR',sans-serif",cursor:"pointer",fontWeight:700,boxShadow:"0 4px 12px #6366f130" }}>📋 복사</button>
       </div>
       <div style={{ fontSize:10,fontWeight:700,color:"#a5b4fc",marginBottom:12,letterSpacing:2,fontFamily:"'DM Mono',monospace" }}>AI FEEDBACK</div>
-      <p style={{ margin:0,lineHeight:1.9,color:"#374151",fontFamily:"'Noto Sans KR',sans-serif",fontSize:14,whiteSpace:"pre-wrap",paddingRight:180 }}>{text}</p>
+      <p style={{ margin:0,lineHeight:1.9,color:"#374151",fontFamily:"'Noto Sans KR',sans-serif",fontSize:14,whiteSpace:"pre-wrap",paddingRight:120 }}>{text}</p>
     </div>
   );
 }
@@ -303,6 +270,7 @@ function LoginScreen({ onLogin, onAdminLogin }) {
           <h1 style={{ margin:0,fontSize:24,fontWeight:800,color:"#1e1b4b" }}>Academy Report</h1>
           <p style={{ margin:"6px 0 0",fontSize:13,color:"#94a3b8" }}>AI 피드백 + Google Sheets 자동 저장</p>
         </div>
+
         {mode === "teacher" ? (
           <div style={{ background:"#fff",borderRadius:24,padding:28,boxShadow:"0 8px 40px #6366f110",border:"1.5px solid #f1f5f9" }}>
             <div style={{ marginBottom:14 }}>
@@ -350,7 +318,7 @@ function LoginScreen({ onLogin, onAdminLogin }) {
 }
 
 // ══════════════════════════════════════════════════════════
-// 관리자 패널
+// 관리자 패널 (기존 그대로 — sue12345 전용)
 // ══════════════════════════════════════════════════════════
 function AdminPanel({ teams, onSave, onClose }) {
   const [draft, setDraft] = useState(()=>JSON.parse(JSON.stringify(teams)));
@@ -425,7 +393,7 @@ function AdminPanel({ teams, onSave, onClose }) {
 }
 
 // ══════════════════════════════════════════════════════════
-// anni 전용 미니 패널
+// anni 전용 미니 패널 (반/학생 추가·편집)
 // ══════════════════════════════════════════════════════════
 function AnniPanel({ teams, onSave, onClose }) {
   const [draft, setDraft] = useState(()=>JSON.parse(JSON.stringify(teams)));
@@ -500,8 +468,9 @@ function AnniPanel({ teams, onSave, onClose }) {
   );
 }
 
+
 // ══════════════════════════════════════════════════════════
-// Student Chart — 🖨️ 인쇄 기능 추가
+// anni 전용 Student Chart
 // ══════════════════════════════════════════════════════════
 const CHART_EMPTY = {
   name:"", mainBook:"", date:"",
@@ -523,77 +492,43 @@ function StudentChart({ teams, onClose }) {
   const updArr = (k,i,v) => setChart(c=>{ const a=[...c[k]]; a[i]=v; return {...c,[k]:a}; });
   const selectStudent = (t,s) => { setSelTeam(t); setSelStudent(s); setChart(c=>({...c,name:s})); };
   const teamColorMap = Object.fromEntries(Object.keys(teams).map((t,i)=>[t,tColors[i%tColors.length]]));
-
   const buildText = () => {
     const tk = chart.tasks.filter(x=>x.trim());
     const hw = chart.homework.filter(x=>x.trim());
     const line = "――――――――――――――――――――――";
-    return `📋 Student Chart\n${line}\n👤 이름 : ${chart.name||"(이름)"}\n📚 교재 : ${chart.mainBook||"(교재)"}\n📅 날짜 : ${chart.date||"(날짜)"}\n${line}\n\n🎧 Intensive Listening\n  · ${chart.listening1||"—"}\n  · ${chart.listening2||"—"}\n${line}\n\n🗣 Pronunciation &\n   Comprehension Check\n  ${chart.pronunciation||"—"}\n${line}\n\n✅ Today's Task\n${tk.length?tk.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}\n${line}\n\n🏠 Home Connection\n   (Unfinished Work)\n${hw.length?hw.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}\n${line}${aiComment?`\n\n💬 선생님 코멘트\n${line}\n  ${aiComment}\n${line}`:""}`;
-  };
+    return `📋 Student Chart
+${line}
+👤 이름 : ${chart.name||"(이름)"}
+📚 교재 : ${chart.mainBook||"(교재)"}
+📅 날짜 : ${chart.date||"(날짜)"}
+${line}
 
-  // 🖨️ Student Chart 인쇄
-  const handlePrintChart = () => {
-    const tk = chart.tasks.filter(x=>x.trim());
-    const hw = chart.homework.filter(x=>x.trim());
-    const today = chart.date || new Date().toLocaleDateString("ko-KR");
-    const html = `
-      <div style="font-family:'Noto Sans KR',sans-serif;">
-        <div style="background:linear-gradient(135deg,#10b981,#3b82f6);color:#fff;padding:16px 20px;border-radius:10px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;">
-          <div>
-            <div style="font-size:10px;letter-spacing:2px;opacity:0.75;margin-bottom:3px;font-weight:500;">수리딩어학원</div>
-            <div style="font-size:20px;font-weight:800;letter-spacing:-0.5px;">📋 Student Chart</div>
-          </div>
-        </div>
-        <div style="display:flex;gap:12px;margin-bottom:16px;">
-          <div style="flex:1;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:10px;padding:12px 16px;">
-            <div style="font-size:10px;color:#10b981;font-weight:700;margin-bottom:4px;">👤 이름</div>
-            <div style="font-size:16px;font-weight:800;color:#1e1b4b;">${chart.name||"—"}</div>
-          </div>
-          <div style="flex:2;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:12px 16px;">
-            <div style="font-size:10px;color:#3b82f6;font-weight:700;margin-bottom:4px;">📚 교재</div>
-            <div style="font-size:14px;font-weight:700;color:#1e1b4b;">${chart.mainBook||"—"}</div>
-          </div>
-          <div style="flex:1;background:#faf5ff;border:1.5px solid #ddd6fe;border-radius:10px;padding:12px 16px;">
-            <div style="font-size:10px;color:#8b5cf6;font-weight:700;margin-bottom:4px;">📅 날짜</div>
-            <div style="font-size:13px;font-weight:700;color:#1e1b4b;">${today}</div>
-          </div>
-        </div>
-        <div style="background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:14px 16px;margin-bottom:12px;">
-          <div style="font-size:10px;color:#3b82f6;font-weight:700;letter-spacing:1px;margin-bottom:8px;">🎧 INTENSIVE LISTENING</div>
-          <div style="font-size:13px;color:#1e1b4b;margin-bottom:4px;">· ${chart.listening1||"—"}</div>
-          <div style="font-size:13px;color:#1e1b4b;">· ${chart.listening2||"—"}</div>
-        </div>
-        <div style="background:#faf5ff;border:1.5px solid #ddd6fe;border-radius:10px;padding:14px 16px;margin-bottom:12px;">
-          <div style="font-size:10px;color:#8b5cf6;font-weight:700;letter-spacing:1px;margin-bottom:8px;">🗣 PRONUNCIATION & COMPREHENSION CHECK</div>
-          <div style="font-size:13px;color:#1e1b4b;line-height:1.7;">${chart.pronunciation||"—"}</div>
-        </div>
-        <div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:10px;padding:14px 16px;margin-bottom:12px;">
-          <div style="font-size:10px;color:#10b981;font-weight:700;letter-spacing:1px;margin-bottom:8px;">✅ TODAY'S TASK</div>
-          ${tk.length?tk.map((x,i)=>`<div style="font-size:13px;color:#1e1b4b;margin-bottom:4px;"><span style="color:#10b981;font-weight:700;">${i+1}.</span> ${x}</div>`).join(""):'<div style="font-size:13px;color:#94a3b8;">—</div>'}
-        </div>
-        <div style="background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:14px 16px;margin-bottom:${aiComment?'12px':'0'};">
-          <div style="font-size:10px;color:#f59e0b;font-weight:700;letter-spacing:1px;margin-bottom:8px;">🏠 HOME CONNECTION (UNFINISHED WORK)</div>
-          ${hw.length?hw.map((x,i)=>`<div style="font-size:13px;color:#1e1b4b;margin-bottom:4px;"><span style="color:#f59e0b;font-weight:700;">${i+1}.</span> ${x}</div>`).join(""):'<div style="font-size:13px;color:#94a3b8;">—</div>'}
-        </div>
-        ${aiComment?`
-        <div style="background:linear-gradient(135deg,#eff6ff,#faf5ff);border:1.5px solid #e0e7ff;border-radius:10px;padding:14px 16px;margin-top:12px;">
-          <div style="font-size:10px;color:#6366f1;font-weight:700;letter-spacing:1px;margin-bottom:8px;">💬 선생님 코멘트</div>
-          <div style="font-size:13px;color:#374151;line-height:1.8;">${aiComment}</div>
-        </div>`:""}
-        <div style="margin-top:20px;padding-top:14px;border-top:1px solid #f1f5f9;text-align:center;font-size:10px;color:#94a3b8;">
-          수리딩어학원 · Academy Report System · ${today}
-        </div>
-      </div>`;
-    printHtml(html, `Student Chart - ${chart.name||"학생"}`);
-  };
+🎧 Intensive Listening
+  · ${chart.listening1||"—"}
+  · ${chart.listening2||"—"}
+${line}
 
+🗣 Pronunciation &
+   Comprehension Check
+  ${chart.pronunciation||"—"}
+${line}
+
+✅ Today's Task
+${tk.length?tk.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}
+${line}
+
+🏠 Home Connection
+   (Unfinished Work)
+${hw.length?hw.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}
+${line}${aiComment?`\n\n💬 선생님 코멘트\n${line}\n  ${aiComment}\n${line}`:""}`;
+  };
   const handleCopy = () => { navigator.clipboard.writeText(buildText()); setCopied(true); setTimeout(()=>setCopied(false),2000); };
 
   const genAiComment = async () => {
     setAiLoading(true);
     const tk = chart.tasks.filter(x=>x.trim());
     const hw = chart.homework.filter(x=>x.trim());
-    const prompt = `당신은 영어학원 선생님입니다. 아래 수업 기록을 바탕으로 학부모에게 보낼 따뜻하고 전문적인 코멘트를 2~3문장으로 작성해주세요.
+    const prompt = `당신은 영어학원 선생님입니다. 아래 수업 기록을 바탕으로 학부모에게 보낼 따뜻하고 전문적인 한국어 코멘트를 2~3문장으로 작성해주세요.
 
 학생: ${chart.name||"학생"} / 교재: ${chart.mainBook||"미입력"} / 날짜: ${chart.date||"오늘"}
 Intensive Listening: ${chart.listening1||"—"}, ${chart.listening2||"—"}
@@ -624,7 +559,7 @@ Home Connection: ${hw.join(", ")||"—"}
             <div style={{ width:40,height:40,borderRadius:12,background:"linear-gradient(135deg,#10b981,#3b82f6)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18 }}>📋</div>
             <div>
               <div style={{ fontSize:17,fontWeight:800,color:"#1e1b4b",fontFamily:"'Noto Sans KR',sans-serif" }}>Student Chart</div>
-              <div style={{ fontSize:11,color:"#94a3b8",fontFamily:"'DM Mono',monospace" }}>수리딩어학원</div>
+              <div style={{ fontSize:11,color:"#94a3b8",fontFamily:"'DM Mono',monospace" }}>수리딩어학원 · anni</div>
             </div>
           </div>
           <button onClick={onClose} style={{ background:"#f1f5f9",border:"none",borderRadius:10,width:36,height:36,fontSize:18,cursor:"pointer",color:"#64748b" }}>✕</button>
@@ -648,7 +583,7 @@ Home Connection: ${hw.join(", ")||"—"}
             })}
           </div>
           <div style={{ display:"grid",gridTemplateColumns:"1fr 2fr 1fr",gap:10,marginBottom:14 }}>
-            {[{label:"Name",key:"name",ph:"Student Name"},{label:"Book Title",key:"mainBook",ph:"Book Title"},{label:"Date",key:"date",ph:"Date",type:"date"}].map(({label,key,ph,type})=>(
+            {[{label:"Name",key:"name",ph:"학생 이름"},{label:"Main Book Title",key:"mainBook",ph:"교재명"},{label:"Date",key:"date",ph:"날짜",type:"date"}].map(({label,key,ph,type})=>(
               <div key={key}>
                 <div style={{ fontSize:10,fontWeight:700,color:"#94a3b8",marginBottom:5,fontFamily:"'DM Mono',monospace" }}>{label}</div>
                 <input type={type||"text"} value={chart[key]} onChange={e=>upd(key,e.target.value)} placeholder={ph}
@@ -700,6 +635,11 @@ Home Connection: ${hw.join(", ")||"—"}
               </div>
             ))}
           </div>
+          <div style={{ background:"linear-gradient(135deg,#f0fdf4,#eff6ff)",borderRadius:16,border:"2px solid #bbf7d0",padding:"16px 18px",marginBottom:16 }}>
+            <div style={{ fontSize:10,fontWeight:700,color:"#10b981",marginBottom:8,letterSpacing:2,fontFamily:"'DM Mono',monospace" }}>📱 카톡 미리보기</div>
+            <pre style={{ margin:0,fontSize:12,color:"#374151",fontFamily:"'Noto Sans KR',sans-serif",lineHeight:1.9,whiteSpace:"pre-wrap",wordBreak:"break-word" }}>{buildText()}</pre>
+          </div>
+          {/* AI 코멘트 생성 */}
           <button onClick={genAiComment} disabled={aiLoading} style={{ width:"100%",marginBottom:10,padding:"14px",background:aiLoading?"#f1f5f9":"linear-gradient(135deg,#6366f1,#8b5cf6)",color:aiLoading?"#94a3b8":"#fff",border:"none",borderRadius:14,fontSize:14,fontWeight:800,cursor:aiLoading?"not-allowed":"pointer",fontFamily:"'Noto Sans KR',sans-serif",boxShadow:aiLoading?"none":"0 8px 24px #6366f130",transition:"all .2s" }}>
             {aiLoading?"✨ AI 코멘트 생성 중...":"✨ AI 선생님 코멘트 자동 생성"}
           </button>
@@ -710,9 +650,8 @@ Home Connection: ${hw.join(", ")||"—"}
               <button onClick={()=>setAiComment("")} style={{ marginTop:8,background:"none",border:"none",color:"#94a3b8",fontSize:11,cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif" }}>× 코멘트 삭제</button>
             </div>
           )}
-          <div style={{ display:"flex",gap:8 }}>
-            <button onClick={()=>{ setChart({...CHART_EMPTY,tasks:["","","",""],homework:["","",""],name:selStudent}); setAiComment(""); }} style={{ flex:"0 0 auto",border:"2px solid #e2e8f0",borderRadius:14,padding:"13px 16px",fontSize:13,fontWeight:700,color:"#64748b",background:"#fff",cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif" }}>🔄 초기화</button>
-            <button onClick={handlePrintChart} style={{ flex:"0 0 auto",background:"#f0fdf4",border:"1.5px solid #bbf7d0",borderRadius:14,padding:"13px 16px",fontSize:13,fontWeight:700,color:"#10b981",cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif" }}>🖨️ 인쇄</button>
+          <div style={{ display:"flex",gap:10 }}>
+            <button onClick={()=>{ setChart({...CHART_EMPTY,tasks:["","","",""],homework:["","",""],name:selStudent}); setAiComment(""); }} style={{ flex:"0 0 auto",border:"2px solid #e2e8f0",borderRadius:14,padding:"13px 20px",fontSize:13,fontWeight:700,color:"#64748b",background:"#fff",cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif" }}>🔄 초기화</button>
             <button onClick={handleCopy} style={{ flex:1,background:copied?"linear-gradient(135deg,#10b981,#059669)":"linear-gradient(135deg,#10b981,#3b82f6)",color:"#fff",border:"none",borderRadius:14,padding:"13px",fontSize:15,fontWeight:800,cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif",boxShadow:"0 8px 24px #10b98130",transition:"all .2s" }}>
               {copied?"✅ 복사됨!":"📋 카톡으로 복사"}
             </button>
@@ -809,7 +748,6 @@ export default function App() {
     catch(e) { showToast("❌ 저장 실패 — 네트워크 확인"); }
     finally { setSyncing(false); }
   };
-
   const genWeekly = async () => {
     setLoading(true); setWeeklyRes(""); setWSaved(false);
     try {
@@ -821,7 +759,6 @@ export default function App() {
     } catch(e) { showToast("❌ 오류: "+e.message); }
     finally { setLoading(false); }
   };
-
   const genMonthly = async () => {
     setLoading(true); setMonthlyRes(""); setMSaved(false);
     try {
@@ -833,127 +770,13 @@ export default function App() {
     finally { setLoading(false); }
   };
 
-  // 🖨️ 주간 리포트 인쇄
-  const printWeekly = () => {
-    const w = weeks[wIdx];
-    const today = w.date || new Date().toLocaleDateString("ko-KR");
-    const html = `
-      <div style="max-width:600px;margin:0 auto;font-family:'Noto Sans KR',sans-serif;">
-        <div style="background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;padding:20px 24px;border-radius:12px;margin-bottom:20px;">
-          <div style="font-size:11px;letter-spacing:2px;opacity:0.8;margin-bottom:4px;">수리딩어학원 · 주간 리포트</div>
-          <div style="font-size:22px;font-weight:800;">📅 Weekly Report</div>
-        </div>
-        <div style="display:flex;gap:10px;margin-bottom:16px;">
-          <div style="flex:1;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:12px;">
-            <div style="font-size:10px;color:#6366f1;font-weight:700;margin-bottom:2px;">학생</div>
-            <div style="font-size:16px;font-weight:800;color:#1e1b4b;">${student}</div>
-          </div>
-          <div style="flex:1;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:10px;padding:12px;">
-            <div style="font-size:10px;color:#10b981;font-weight:700;margin-bottom:2px;">반</div>
-            <div style="font-size:14px;font-weight:700;color:#1e1b4b;">${team}팀</div>
-          </div>
-          <div style="flex:1;background:#faf5ff;border:1.5px solid #ddd6fe;border-radius:10px;padding:12px;">
-            <div style="font-size:10px;color:#8b5cf6;font-weight:700;margin-bottom:2px;">날짜</div>
-            <div style="font-size:13px;font-weight:700;color:#1e1b4b;">${today}</div>
-          </div>
-          <div style="flex:1;background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:12px;">
-            <div style="font-size:10px;color:#f59e0b;font-weight:700;margin-bottom:2px;">주차</div>
-            <div style="font-size:14px;font-weight:700;color:#1e1b4b;">W${wIdx+1}</div>
-          </div>
-        </div>
-        <div style="background:#f8fafc;border:1.5px solid #f1f5f9;border-radius:12px;padding:16px;margin-bottom:16px;">
-          <div style="font-size:11px;font-weight:700;color:#94a3b8;margin-bottom:12px;letter-spacing:1px;">학습 데이터</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:${w.grammar||w.reading||w.writing?'12px':'0'};">
-            <div style="text-align:center;background:#fff;border-radius:10px;padding:10px;border:1.5px solid #f1f5f9;">
-              <div style="font-size:10px;color:#94a3b8;margin-bottom:4px;">Wordly Wise</div>
-              <div style="font-size:15px;font-weight:800;color:${WW_C[w.ww]||'#374151'};">${w.ww||"—"}</div>
-            </div>
-            <div style="text-align:center;background:#fff;border-radius:10px;padding:10px;border:1.5px solid #f1f5f9;">
-              <div style="font-size:10px;color:#94a3b8;margin-bottom:4px;">숙제</div>
-              <div style="font-size:15px;font-weight:800;color:${HW_C[w.hw]||'#374151'};">${w.hw||"—"}</div>
-            </div>
-            <div style="text-align:center;background:#fff;border-radius:10px;padding:10px;border:1.5px solid #f1f5f9;">
-              <div style="font-size:10px;color:#94a3b8;margin-bottom:4px;">수업 태도</div>
-              <div style="font-size:15px;font-weight:800;color:${ATT_C[w.attitude]||'#374151'};">${w.attitude||"—"}</div>
-            </div>
-          </div>
-          ${w.grammar||w.reading||w.writing?`<div style="display:grid;gap:8px;">
-            ${w.grammar?`<div style="background:#fff;border-radius:8px;padding:8px 12px;border:1.5px solid #f1f5f9;font-size:13px;color:#374151;"><span style="font-weight:700;color:#6366f1;">📐 Grammar:</span> ${w.grammar}</div>`:""}
-            ${w.reading?`<div style="background:#fff;border-radius:8px;padding:8px 12px;border:1.5px solid #f1f5f9;font-size:13px;color:#374151;"><span style="font-weight:700;color:#10b981;">📖 Reading:</span> ${w.reading}</div>`:""}
-            ${w.writing?`<div style="background:#fff;border-radius:8px;padding:8px 12px;border:1.5px solid #f1f5f9;font-size:13px;color:#374151;"><span style="font-weight:700;color:#f59e0b;">✍️ Writing:</span> ${w.writing}</div>`:""}
-          </div>`:""}
-        </div>
-        ${weeklyRes?`
-        <div style="background:linear-gradient(135deg,#eff6ff,#faf5ff);border:2px solid #e0e7ff;border-radius:12px;padding:20px;">
-          <div style="font-size:10px;font-weight:700;color:#a5b4fc;margin-bottom:12px;letter-spacing:2px;">AI FEEDBACK</div>
-          <p style="margin:0;line-height:1.9;color:#374151;font-size:14px;white-space:pre-wrap;">${weeklyRes}</p>
-        </div>`:""}
-        <div style="margin-top:20px;padding-top:14px;border-top:1px solid #f1f5f9;text-align:center;font-size:10px;color:#94a3b8;">
-          수리딩어학원 · Academy Report System · ${today}
-        </div>
-      </div>`;
-    printHtml(html, `주간 리포트 - ${student} W${wIdx+1}`);
-  };
-
-  // 🖨️ 월간 리포트 인쇄
-  const printMonthly = () => {
-    const filled2 = weeks.filter(w=>w.ww||w.hw||w.attitude);
-    const wwPass2  = filled2.filter(w=>w.ww==="Pass").length;
-    const wwTotal2 = filled2.filter(w=>w.ww==="Pass"||w.ww==="Retest").length;
-    const hwGood2  = filled2.filter(w=>w.hw==="Excellent"||w.hw==="Good").length;
-    const attGood2 = filled2.filter(w=>w.attitude==="적극적").length;
-    const today   = new Date().toLocaleDateString("ko-KR");
-    const html = `
-      <div style="max-width:600px;margin:0 auto;font-family:'Noto Sans KR',sans-serif;">
-        <div style="background:linear-gradient(135deg,#8b5cf6,#6366f1,#3b82f6);color:#fff;padding:20px 24px;border-radius:12px;margin-bottom:20px;">
-          <div style="font-size:11px;letter-spacing:2px;opacity:0.8;margin-bottom:4px;">수리딩어학원 · 월간 리포트</div>
-          <div style="font-size:22px;font-weight:800;">🏆 Monthly Report</div>
-          <div style="font-size:14px;margin-top:6px;opacity:0.9;">${team}팀 · ${student}</div>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;">
-          <div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:10px;padding:14px;text-align:center;">
-            <div style="font-size:10px;color:#10b981;font-weight:700;margin-bottom:4px;">WW Pass</div>
-            <div style="font-size:24px;font-weight:800;color:#10b981;">${wwPass2}</div>
-          </div>
-          <div style="background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:14px;text-align:center;">
-            <div style="font-size:10px;color:#f59e0b;font-weight:700;margin-bottom:4px;">Pass율</div>
-            <div style="font-size:24px;font-weight:800;color:#f59e0b;">${wwTotal2>0?Math.round(wwPass2/wwTotal2*100):0}%</div>
-          </div>
-          <div style="background:#faf5ff;border:1.5px solid #ddd6fe;border-radius:10px;padding:14px;text-align:center;">
-            <div style="font-size:10px;color:#8b5cf6;font-weight:700;margin-bottom:4px;">숙제 이행율</div>
-            <div style="font-size:24px;font-weight:800;color:#8b5cf6;">${filled2.length>0?Math.round(hwGood2/filled2.length*100):0}%</div>
-          </div>
-          <div style="background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:14px;text-align:center;">
-            <div style="font-size:10px;color:#3b82f6;font-weight:700;margin-bottom:4px;">적극적 횟수</div>
-            <div style="font-size:24px;font-weight:800;color:#3b82f6;">${attGood2}</div>
-          </div>
-          <div style="background:#f8fafc;border:1.5px solid #f1f5f9;border-radius:10px;padding:14px;text-align:center;">
-            <div style="font-size:10px;color:#94a3b8;font-weight:700;margin-bottom:4px;">입력 주수</div>
-            <div style="font-size:24px;font-weight:800;color:#94a3b8;">${filled2.length}</div>
-          </div>
-          <div style="background:#fff0f5;border:1.5px solid #fecdd3;border-radius:10px;padding:14px;text-align:center;">
-            <div style="font-size:10px;color:#f43f7a;font-weight:700;margin-bottom:4px;">Retest</div>
-            <div style="font-size:24px;font-weight:800;color:#f43f7a;">${wwTotal2-wwPass2}</div>
-          </div>
-        </div>
-        ${monthlyRes?`
-        <div style="background:linear-gradient(135deg,#eff6ff,#faf5ff);border:2px solid #e0e7ff;border-radius:12px;padding:20px;margin-bottom:16px;">
-          <div style="font-size:10px;font-weight:700;color:#a5b4fc;margin-bottom:12px;letter-spacing:2px;">AI MONTHLY FEEDBACK</div>
-          <p style="margin:0;line-height:1.9;color:#374151;font-size:14px;white-space:pre-wrap;">${monthlyRes}</p>
-        </div>`:""}
-        <div style="margin-top:20px;padding-top:14px;border-top:1px solid #f1f5f9;text-align:center;font-size:10px;color:#94a3b8;">
-          수리딩어학원 · Academy Report System · ${today}
-        </div>
-      </div>`;
-    printHtml(html, `월간 리포트 - ${student}`);
-  };
-
   const filled  = weeks.filter(w=>w.ww||w.hw||w.attitude);
   const wwPass  = filled.filter(w=>w.ww==="Pass").length;
   const wwTotal = filled.filter(w=>w.ww==="Pass"||w.ww==="Retest").length;
   const hwGood  = filled.filter(w=>w.hw==="Excellent"||w.hw==="Good").length;
   const attGood = filled.filter(w=>w.attitude==="적극적").length;
 
+  // 로그인 전
   if (!currentUser) return <LoginScreen onLogin={handleLogin} onAdminLogin={handleAdminLogin}/>;
 
   return (
@@ -977,11 +800,13 @@ export default function App() {
             <p style={{ margin:0,fontSize:12,color:"#94a3b8",fontWeight:500 }}>AI 피드백 + Google Sheets 자동 저장</p>
           </div>
           <div style={{ marginLeft:"auto",display:"flex",gap:8,alignItems:"center",flexWrap:"wrap" }}>
+            {/* 로그인 사용자 */}
             <div style={{ display:"flex",alignItems:"center",gap:6,background:"#f0f4ff",border:"1.5px solid #c7d2fe",borderRadius:20,padding:"5px 14px" }}>
               <span style={{ fontSize:11,color:"#6366f1",fontWeight:700,fontFamily:"'DM Mono',monospace" }}>
                 {isAdmin ? "👑 ADMIN" : `👩‍🏫 ${currentUser.name.toUpperCase()}`}
               </span>
             </div>
+            {/* anni 전용: 반 관리 버튼 */}
             {isManager && (
               <button onClick={()=>setShowAnniPanel(true)} style={{ background:"#f0fdf4",border:"1.5px solid #bbf7d0",borderRadius:20,padding:"5px 14px",fontSize:11,color:"#10b981",cursor:"pointer",fontWeight:700,fontFamily:"'DM Mono',monospace" }}>
                 👩‍🏫 반 관리
@@ -992,6 +817,7 @@ export default function App() {
                 📋 Student Chart
               </button>
             )}
+            {/* 관리자 전용 */}
             {isAdmin && (
               <button onClick={()=>setShowAdminPanel(true)} style={{ background:"#f8fafc",border:"1.5px solid #e2e8f0",borderRadius:20,padding:"5px 14px",fontSize:11,color:"#64748b",cursor:"pointer",fontWeight:700,fontFamily:"'DM Mono',monospace" }}>
                 ⚙️ 관리자
@@ -1044,7 +870,7 @@ export default function App() {
           ))}
         </div>
 
-        {/* 주간 탭 */}
+        {/* ── 주간 탭 ── */}
         {tab==="weekly" && (
           <div style={{ animation:"fadeUp .35s ease" }}>
             <div style={{ background:"#fff",borderRadius:18,border:"1.5px solid #f1f5f9",padding:"18px 20px",marginBottom:14,boxShadow:"0 2px 10px #00000006" }}>
@@ -1072,12 +898,12 @@ export default function App() {
               </button>
             </div>
             <div style={{ marginTop:16 }}>
-              <ReportBox text={weeklyRes} loading={loading} onCopy={()=>navigator.clipboard.writeText(weeklyRes)} onPrint={printWeekly} saved={wSaved}/>
+              <ReportBox text={weeklyRes} loading={loading} onCopy={()=>navigator.clipboard.writeText(weeklyRes)} saved={wSaved}/>
             </div>
           </div>
         )}
 
-        {/* 월간 탭 */}
+        {/* ── 월간 탭 ── */}
         {tab==="monthly" && (
           <div style={{ animation:"fadeUp .35s ease" }}>
             <div style={{ background:"#fff",borderRadius:20,border:"1.5px solid #f1f5f9",padding:"22px",marginBottom:14,boxShadow:"0 2px 12px #00000006" }}>
@@ -1119,7 +945,7 @@ export default function App() {
               {loading?"🏆 생성 중...":`🏆 ${student} 월간 종합 리포트 생성 + 저장`}
             </button>
             <div style={{ marginTop:16 }}>
-              <ReportBox text={monthlyRes} loading={loading} onCopy={()=>navigator.clipboard.writeText(monthlyRes)} onPrint={printMonthly} saved={mSaved}/>
+              <ReportBox text={monthlyRes} loading={loading} onCopy={()=>navigator.clipboard.writeText(monthlyRes)} saved={mSaved}/>
             </div>
           </div>
         )}
