@@ -507,7 +507,7 @@ function AnniPanel({ teams, onSave, onClose }) {
     </div>
   );
 }
-function HistoryPanel({ team, student, onClose }) {
+function HistoryPanel({ team, student, onClose, onLoad }) {  
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied]   = useState(null);
@@ -615,6 +615,12 @@ function HistoryPanel({ team, student, onClose }) {
                         {item.ww && <span style={{ fontSize:11,fontWeight:700,color:WW_C[item.ww]||"#94a3b8",background:(WW_C[item.ww]||"#94a3b8")+"18",padding:"2px 8px",borderRadius:6 }}>{item.ww}</span>}
                         {item.hw && <span style={{ fontSize:11,fontWeight:700,color:HW_C[item.hw]||"#94a3b8",background:(HW_C[item.hw]||"#94a3b8")+"18",padding:"2px 8px",borderRadius:6 }}>{item.hw}</span>}
                       </div>
+                      <button
+                        onClick={() => { onLoad(item); onClose(); }}
+                        style={{ background:"#f0fdf4",color:"#10b981",border:"1.5px solid #bbf7d0",borderRadius:8,padding:"4px 12px",fontSize:11,cursor:"pointer",fontWeight:700,fontFamily:"'Noto Sans KR',sans-serif",flexShrink:0 }}
+                       >
+                         📥 불러오기
+                      </button>
                       <button
                         onClick={() => handleCopy(item.text, idx)}
                         style={{ background:copied===idx?"#10b981":"#fff",color:copied===idx?"#fff":accentColor,border:`1.5px solid ${copied===idx?"#10b981":borderColor}`,borderRadius:8,padding:"4px 12px",fontSize:11,cursor:"pointer",fontWeight:700,fontFamily:"'Noto Sans KR',sans-serif",transition:"all .2s",flexShrink:0 }}
@@ -1094,7 +1100,22 @@ export default function App() {
       {showAdminPanel && <AdminPanel teams={teams} onSave={handleAdminSave} onClose={()=>setShowAdminPanel(false)}/>}
       {showAnniPanel  && <AnniPanel  teams={teams} onSave={handleAnniSave}  onClose={()=>setShowAnniPanel(false)}/>}
       {showChartPanel && <StudentChart teams={teams} onClose={()=>setShowChartPanel(false)}/>}
-      {showHistoryPanel && <HistoryPanel team={team} student={student} onClose={()=>setShowHistoryPanel(false)}/>}
+      {showHistoryPanel && <HistoryPanel team={team} student={student} onClose={()=>setShowHistoryPanel(false)} onLoad={(item)=>{
+  setTab("weekly");
+  setWeeklyRes(item.text||"");
+  setWeeks(prev => {
+    const updated = [...prev];
+    updated[wIdx] = {
+      ...updated[wIdx],
+      grammar: item.grammar||"",
+      ww:      item.ww||"",
+      hw:      item.hw||"",
+    };
+    return updated;
+  });
+  setShowHistoryPanel(false);
+  showToast("✅ 과거 데이터를 불러왔습니다. 수정 후 전송하세요!");
+}}/>}        
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&family=DM+Mono:wght@500;700&display=swap');
         @keyframes spin{to{transform:rotate(360deg)}}
