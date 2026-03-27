@@ -679,15 +679,15 @@ function StudentChart({ teams, onClose }) {
         </div>
         <div style="display:flex;gap:12px;margin-bottom:16px;">
           <div style="flex:1;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:10px;padding:12px 16px;">
-            <div style="font-size:10px;color:#10b981;font-weight:700;margin-bottom:4px;">👤 이름</div>
+            <div style="font-size:10px;color:#10b981;font-weight:700;margin-bottom:4px;">👤 NAME</div>
             <div style="font-size:16px;font-weight:800;color:#1e1b4b;">${chart.name||"—"}</div>
           </div>
           <div style="flex:2;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:12px 16px;">
-            <div style="font-size:10px;color:#3b82f6;font-weight:700;margin-bottom:4px;">📚 교재</div>
+            <div style="font-size:10px;color:#3b82f6;font-weight:700;margin-bottom:4px;">📚 BOOK</div>
             <div style="font-size:14px;font-weight:700;color:#1e1b4b;">${chart.mainBook||"—"}</div>
           </div>
           <div style="flex:1;background:#faf5ff;border:1.5px solid #ddd6fe;border-radius:10px;padding:12px 16px;">
-            <div style="font-size:10px;color:#8b5cf6;font-weight:700;margin-bottom:4px;">📅 날짜</div>
+            <div style="font-size:10px;color:#8b5cf6;font-weight:700;margin-bottom:4px;">📅 DATE</div>
             <div style="font-size:13px;font-weight:700;color:#1e1b4b;">${today}</div>
           </div>
         </div>
@@ -705,7 +705,7 @@ function StudentChart({ teams, onClose }) {
           ${tk.length?tk.map((x,i)=>`<div style="font-size:13px;color:#1e1b4b;margin-bottom:4px;"><span style="color:#10b981;font-weight:700;">${i+1}.</span> ${x}</div>`).join(""):'<div style="font-size:13px;color:#94a3b8;">—</div>'}
         </div>
         <div style="background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:14px 16px;margin-bottom:${aiComment?'12px':'0'};">
-          <div style="font-size:10px;color:#f59e0b;font-weight:700;letter-spacing:1px;margin-bottom:8px;">🏠 HOME CONNECTION (UNFINISHED WORK)</div>
+          <div style="font-size:10px;color:#f59e0b;font-weight:700;letter-spacing:1px;margin-bottom:8px;">🏠 HOME CONNECTION / UNFINISHED WORK</div>
           ${hw.length?hw.map((x,i)=>`<div style="font-size:13px;color:#1e1b4b;margin-bottom:4px;"><span style="color:#f59e0b;font-weight:700;">${i+1}.</span> ${x}</div>`).join(""):'<div style="font-size:13px;color:#94a3b8;">—</div>'}
         </div>
         ${aiComment?`
