@@ -1197,6 +1197,25 @@ export default function App() {
     <div style={{ minHeight:"100vh",background:"linear-gradient(150deg,#f0f4ff 0%,#fdf4ff 50%,#f0fdf9 100%)",fontFamily:"'Noto Sans KR',sans-serif",paddingBottom:60 }}>
       {showAdminPanel && <AdminPanel teams={teams} onSave={handleAdminSave} onClose={()=>setShowAdminPanel(false)}/>}
       {showAnniPanel  && <AnniPanel  teams={teams} onSave={handleAnniSave}  onClose={()=>setShowAnniPanel(false)}/>}
+       {showChartHistory && <ChartHistoryPanel
+  team={selTeam||Object.keys(teams)[0]}
+  student={selStudent||""}
+  onClose={()=>setShowChartHistory(false)}
+  onLoad={(item)=>{
+    setChart({
+      name:          item.student||"",
+      mainBook:      item.mainBook||"",
+      date:          item.date||"",
+      listening1:    item.listening1||"",
+      listening2:    item.listening2||"",
+      pronunciation: item.pronunciation||"",
+      tasks:         item.tasks||["","","",""],
+      homework:      item.homework||["","",""],
+    });
+    setAiComment(item.aiComment||"");
+    setShowChartHistory(false);
+  }}
+/>}
       {showChartPanel && <StudentChart teams={teams} onClose={()=>setShowChartPanel(false)}/>}
       {showHistoryPanel && <HistoryPanel team={team} student={student} onClose={()=>setShowHistoryPanel(false)} onLoad={(item)=>{
   setTab("weekly");
