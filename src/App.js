@@ -858,6 +858,25 @@ Home Connection: ${hw.join(", ")||"—"}
           <button onClick={onClose} style={{ background:"#f1f5f9",border:"none",borderRadius:10,width:36,height:36,fontSize:18,cursor:"pointer",color:"#64748b" }}>✕</button>
         </div>
         <div style={{ padding:"22px 26px" }}>
+  {showChartHistory && <ChartHistoryPanel
+  team={selTeam||Object.keys(teams)[0]}
+  student={selStudent||""}
+  onClose={()=>setShowChartHistory(false)}
+  onLoad={(item)=>{
+    setChart({
+      name:          item.student||"",
+      mainBook:      item.mainBook||"",
+      date:          item.date||"",
+      listening1:    item.listening1||"",
+      listening2:    item.listening2||"",
+      pronunciation: item.pronunciation||"",
+      tasks:         item.tasks||["","","",""],
+      homework:      item.homework||["","",""],
+    });
+    setAiComment(item.aiComment||"");
+    setShowChartHistory(false);
+  }}
+/>}
           <div style={{ marginBottom:18 }}>
             <div style={{ fontSize:11,fontWeight:700,color:"#94a3b8",letterSpacing:1.5,marginBottom:10,fontFamily:"'DM Mono',monospace" }}>학생 선택</div>
             {Object.entries(teams).map(([tName,students],ti)=>{
@@ -1197,25 +1216,7 @@ export default function App() {
     <div style={{ minHeight:"100vh",background:"linear-gradient(150deg,#f0f4ff 0%,#fdf4ff 50%,#f0fdf9 100%)",fontFamily:"'Noto Sans KR',sans-serif",paddingBottom:60 }}>
       {showAdminPanel && <AdminPanel teams={teams} onSave={handleAdminSave} onClose={()=>setShowAdminPanel(false)}/>}
       {showAnniPanel  && <AnniPanel  teams={teams} onSave={handleAnniSave}  onClose={()=>setShowAnniPanel(false)}/>}
-       {showChartHistory && <ChartHistoryPanel
-  team={selTeam||Object.keys(teams)[0]}
-  student={selStudent||""}
-  onClose={()=>setShowChartHistory(false)}
-  onLoad={(item)=>{
-    setChart({
-      name:          item.student||"",
-      mainBook:      item.mainBook||"",
-      date:          item.date||"",
-      listening1:    item.listening1||"",
-      listening2:    item.listening2||"",
-      pronunciation: item.pronunciation||"",
-      tasks:         item.tasks||["","","",""],
-      homework:      item.homework||["","",""],
-    });
-    setAiComment(item.aiComment||"");
-    setShowChartHistory(false);
-  }}
-/>}
+       
       {showChartPanel && <StudentChart teams={teams} onClose={()=>setShowChartPanel(false)}/>}
       {showHistoryPanel && <HistoryPanel team={team} student={student} onClose={()=>setShowHistoryPanel(false)} onLoad={(item)=>{
   setTab("weekly");
