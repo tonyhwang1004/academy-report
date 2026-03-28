@@ -119,7 +119,31 @@ async function loadFeedbackHistory(team, student) {
     return data.history || [];
   } catch(e) { return []; }
 }
+async function saveChartToSheet(team, student, chart, aiComment) {
+  try {
+    const url = APPS_SCRIPT_URL + "?action=saveChart&chartData=" + encodeURIComponent(JSON.stringify({
+      team, student,
+      date:          chart.date,
+      mainBook:      chart.mainBook,
+      listening1:    chart.listening1,
+      listening2:    chart.listening2,
+      pronunciation: chart.pronunciation,
+      tasks:         chart.tasks,
+      homework:      chart.homework,
+      aiComment:     aiComment,
+    }));
+    await fetch(url);
+  } catch(e) { console.error(e); }
+}
 
+async function loadChartHistoryFromSheet(team, student) {
+  try {
+    const url = `${APPS_SCRIPT_URL}?action=loadChartHistory&team=${encodeURIComponent(team)}&student=${encodeURIComponent(student)}`;
+    const res  = await fetch(url);
+    const data = await res.json();
+    return data.history || [];
+  } catch(e) { return []; }
+}
 // ══════════════════════════════════════════════════════════
 // 프롬프트 빌더
 // ══════════════════════════════════════════════════════════
@@ -649,12 +673,77 @@ const CHART_EMPTY = {
   tasks:["","","",""],
   homework:["","",""],
 };
+function ChartHistoryPanel({ team, student, onClose, onLoad }) {
+  const [history, setHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    setLoading(true);
+    loadChartHistoryFromSheet(team, student).then(data => {
+      setHistory(data);
+      setLoading(false);
+    });
+  }, [team, student]);
+
+  return (
+    <div style={{ position:"fixed",inset:0,background:"rgba(0,0,0,0.55)",backdropFilter:"blur(4px)",zIndex:2000,display:"flex",alignItems:"center",justifyContent:"center",padding:16 }}>
+      <div style={{ background:"#fff",borderRadius:28,width:"100%",maxWidth:640,maxHeight:"90vh",overflow:"auto",boxShadow:"0 24px 80px #00000030" }}>
+        <div style={{ padding:"22px 26px 18px",borderBottom:"1.5px solid #f1f5f9",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,background:"#fff",borderRadius:"28px 28px 0 0",zIndex:10 }}>
+          <div style={{ display:"flex",alignItems:"center",gap:12 }}>
+            <div style={{ width:40,height:40,borderRadius:12,background:"linear-gradient(135deg,#10b981,#3b82f6)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18 }}>📋</div>
+            <div>
+              <div style={{ fontSize:17,fontWeight:800,color:"#1e1b4b",fontFamily:"'Noto Sans KR',sans-serif" }}>지난 Student Chart</div>
+              <div style={{ fontSize:11,color:"#94a3b8",fontFamily:"'DM Mono',monospace" }}>{team}팀 · {student}</div>
+            </div>
+          </div>
+          <button onClick={onClose} style={{ background:"#f1f5f9",border:"none",borderRadius:10,width:36,height:36,fontSize:18,cursor:"pointer",color:"#64748b" }}>✕</button>
+        </div>
+        <div style={{ padding:"18px 26px" }}>
+          {loading ? (
+            <div style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:12,padding:"48px 0" }}>
+              <div style={{ width:22,height:22,borderRadius:"50%",border:"3px solid #10b981",borderTopColor:"transparent",animation:"spin .7s linear infinite" }}/>
+              <span style={{ color:"#94a3b8",fontFamily:"'Noto Sans KR',sans-serif",fontSize:14 }}>불러오는 중...</span>
+            </div>
+          ) : history.length === 0 ? (
+            <div style={{ textAlign:"center",padding:"48px 0" }}>
+              <div style={{ fontSize:40,marginBottom:12 }}>📭</div>
+              <div style={{ color:"#94a3b8",fontFamily:"'Noto Sans KR',sans-serif",fontSize:14 }}>저장된 Chart가 없습니다</div>
+            </div>
+          ) : (
+            <div style={{ display:"grid",gap:14 }}>
+              {history.map((item, idx) => (
+                <div key={idx} style={{ background:"#f0fdf4",borderRadius:16,border:"2px solid #bbf7d0",padding:"18px 20px" }}>
+                  <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10,flexWrap:"wrap",gap:6 }}>
+                    <div style={{ display:"flex",alignItems:"center",gap:8,flexWrap:"wrap" }}>
+                      <span style={{ fontSize:11,fontWeight:700,color:"#10b981",background:"#fff",padding:"3px 10px",borderRadius:8,border:"1.5px solid #bbf7d0",fontFamily:"'DM Mono',monospace" }}>📋 Chart</span>
+                      {item.date && <span style={{ fontSize:11,color:"#94a3b8" }}>{item.date}</span>}
+                      {item.mainBook && <span style={{ fontSize:11,color:"#3b82f6",background:"#eff6ff",padding:"2px 8px",borderRadius:6,border:"1px solid #bfdbfe" }}>📚 {item.mainBook}</span>}
+                    </div>
+                    <button
+                      onClick={() => { onLoad(item); onClose(); }}
+                      style={{ background:"#10b981",color:"#fff",border:"none",borderRadius:8,padding:"4px 12px",fontSize:11,cursor:"pointer",fontWeight:700,fontFamily:"'Noto Sans KR',sans-serif" }}
+                    >
+                      📥 불러오기
+                    </button>
+                  </div>
+                  {item.listening1 && <div style={{ fontSize:12,color:"#374151",marginBottom:4 }}>🎧 {item.listening1}{item.listening2 ? ` / ${item.listening2}` : ""}</div>}
+                  {item.pronunciation && <div style={{ fontSize:12,color:"#374151",marginBottom:4 }}>🗣 {item.pronunciation}</div>}
+                  {item.aiComment && <div style={{ fontSize:12,color:"#6366f1",marginTop:8,fontStyle:"italic" }}>💬 {item.aiComment.slice(0,80)}...</div>}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 function StudentChart({ teams, onClose }) {
   const [chart, setChart] = useState({...CHART_EMPTY, tasks:["","","",""], homework:["","",""]});
   const [copied, setCopied] = useState(false);
   const [aiComment, setAiComment] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
+  const [showChartHistory, setShowChartHistory] = useState(false);
   const [selTeam, setSelTeam] = useState(Object.keys(teams)[0]||"");
   const [selStudent, setSelStudent] = useState(Object.values(teams)[0]?.[0]||"");
   const tColors = ["#f43f7a","#10b981","#3b82f6","#f59e0b","#8b5cf6"];
@@ -840,7 +929,10 @@ Home Connection: ${hw.join(", ")||"—"}
             ))}
           </div>
           <button onClick={genAiComment} disabled={aiLoading} style={{ width:"100%",marginBottom:10,padding:"14px",background:aiLoading?"#f1f5f9":"linear-gradient(135deg,#6366f1,#8b5cf6)",color:aiLoading?"#94a3b8":"#fff",border:"none",borderRadius:14,fontSize:14,fontWeight:800,cursor:aiLoading?"not-allowed":"pointer",fontFamily:"'Noto Sans KR',sans-serif",boxShadow:aiLoading?"none":"0 8px 24px #6366f130",transition:"all .2s" }}>
-            {aiLoading?"✨ AI 코멘트 생성 중...":"✨ AI 선생님 코멘트 자동 생성"}
+           <button onClick={()=>setShowChartHistory(true)} style={{ width:"100%",marginBottom:10,padding:"14px",background:"linear-gradient(135deg,#10b981,#3b82f6)",color:"#fff",border:"none",borderRadius:14,fontSize:14,fontWeight:800,cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif",boxShadow:"0 8px 24px #10b98130" }}>
+  📚 지난 Chart 불러오기
+</button>            
+{aiLoading?"✨ AI 코멘트 생성 중...":"✨ AI 선생님 코멘트 자동 생성"}
           </button>
           {aiComment && (
             <div style={{ background:"linear-gradient(135deg,#eff6ff,#faf5ff)",borderRadius:14,border:"2px solid #e0e7ff",padding:"14px 16px",marginBottom:12 }}>
@@ -850,6 +942,12 @@ Home Connection: ${hw.join(", ")||"—"}
             </div>
           )}
           <div style={{ display:"flex",gap:8 }}>
+            <button onClick={async()=>{
+  await saveChartToSheet(selTeam, selStudent, chart, aiComment);
+  alert("✅ 구글 시트에 저장됐습니다!");
+}} style={{ flex:"0 0 auto",background:"#eff6ff",border:"1.5px solid #bfdbfe",borderRadius:14,padding:"13px 16px",fontSize:13,fontWeight:700,color:"#6366f1",cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif" }}>
+  💾 저장
+</button>
             <button onClick={()=>{ setChart({...CHART_EMPTY,tasks:["","","",""],homework:["","",""],name:selStudent}); setAiComment(""); }} style={{ flex:"0 0 auto",border:"2px solid #e2e8f0",borderRadius:14,padding:"13px 16px",fontSize:13,fontWeight:700,color:"#64748b",background:"#fff",cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif" }}>🔄 초기화</button>
             <button onClick={handlePrintChart} style={{ flex:"0 0 auto",background:"#f0fdf4",border:"1.5px solid #bbf7d0",borderRadius:14,padding:"13px 16px",fontSize:13,fontWeight:700,color:"#10b981",cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif" }}>🖨️ 인쇄</button>
             <button onClick={handleCopy} style={{ flex:1,background:copied?"linear-gradient(135deg,#10b981,#059669)":"linear-gradient(135deg,#10b981,#3b82f6)",color:"#fff",border:"none",borderRadius:14,padding:"13px",fontSize:15,fontWeight:800,cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif",boxShadow:"0 8px 24px #10b98130",transition:"all .2s" }}>
