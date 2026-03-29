@@ -148,57 +148,77 @@ async function loadChartHistoryFromSheet(team, student) {
 // 프롬프트 빌더
 // ══════════════════════════════════════════════════════════
 function buildWeeklyPrompt(team, student, week) {
-  const grammarNote = week.grammar
-    ? `Grammar는 현재 "${week.grammar}" 단원을 학습 중입니다. 이 단원의 핵심 문법 개념(예: 시제, 전치사, 관계사 등)을 언급하며 학생의 이해 수준을 구체적으로 서술해 주세요.`
-    : "Grammar 진도가 입력되지 않았습니다.";
-  const writingNote = week.writing
-    ? `Writing 평가는 "${week.writing}"입니다. 학생이 문장 구성, 어휘 선택, 문단 흐름 중 어떤 부분에서 강점을 보이는지 또는 보완이 필요한지 학부모가 이해할 수 있는 언어로 서술해 주세요.`
-    : "Writing 평가가 입력되지 않았습니다.";
-  return `당신은 영어학원 선생님입니다. 아래 학생의 주간 학습 데이터를 바탕으로 학부모에게 보낼 따뜻하고 전문적인 주간 피드백을 한국어로 작성해주세요.
+  const hasGrammar = !!week.grammar;
+  const hasReading = !!week.reading;
+  const hasWriting = !!week.writing;
+
+  const subjectLines = [
+    hasGrammar ? `- Grammar 진도: ${week.grammar}` : null,
+    hasReading ? `- Reading 이해도: ${week.reading}` : null,
+    hasWriting ? `- Writing 평가: ${week.writing}` : null,
+  ].filter(Boolean).join("\n") || "- (과목별 진도 입력 없음)";
+
+  const subjectInstructions = [
+    hasGrammar ? `Grammar "${week.grammar}" 단원을 학습했습니다. 핵심 개념을 언급하며 학생의 이해 수준을 간결하게 서술해 주세요.` : null,
+    hasWriting ? `Writing 평가는 "${week.writing}"입니다. 문장 구성이나 어휘 측면에서 간결하게 서술해 주세요.` : null,
+    hasReading ? `Reading 이해도는 "${week.reading}"입니다. 한 문장으로 간결하게 언급해 주세요.` : null,
+  ].filter(Boolean);
+
+  return `당신은 영어학원 선생님입니다. 아래 학생의 주간 학습 데이터를 바탕으로 학부모에게 보낼 주간 피드백을 한국어로 작성해주세요.
 
 학생: ${team}팀 ${student} / 날짜: ${week.date||"이번 주"}
 - Wordly Wise: ${week.ww||"미입력"} / 숙제: ${week.hw||"미입력"} / 수업 태도: ${week.attitude||"미입력"}
-- Grammar 진도: ${week.grammar||"미입력"} / Reading: ${week.reading||"미입력"} / Writing: ${week.writing||"미입력"}
+${subjectLines}
 
-[Grammar 안내] ${grammarNote}
-[Writing 안내] ${writingNote}
-
-요구사항:
-- 3~4문장 분량
-- 학생 이름으로 시작
-- 좋은 점 → 개선점 → 응원 순서
-- Grammar와 Writing은 구체적인 내용을 반드시 포함
-- 따뜻하고 전문적인 톤
-- 마크다운 없이 순수 텍스트만`;
+[작성 규칙 — 반드시 준수]
+1. 입력되지 않은 항목(Reading, Writing, Grammar 등)은 절대 언급하지 마세요. 없는 내용을 지어내지 마세요.
+2. "눈부신 성장", "정말 대단해요", "훌륭합니다", "놀라운 발전" 같은 과장 표현은 사용하지 마세요.
+3. 사실에 근거한 담백한 문장으로 작성하세요. 칭찬은 한 문장으로 충분합니다.
+4. 3~4문장 분량으로 작성하세요.
+5. 학생 이름으로 시작하세요.
+6. 순서: 이번 주 학습 내용 간단 요약 → 잘한 점 한 가지 → 보완할 점 → 짧은 응원 한 마디
+${subjectInstructions.length > 0 ? "\n[입력된 과목별 안내]\n" + subjectInstructions.map((s,i)=>`${i+1}. ${s}`).join("\n") : ""}
+- 마크다운 없이 순수 텍스트만 출력하세요.`;
 }
-
 function buildMonthlyPrompt(team, student, weeks) {
   const f = weeks.filter(w=>w.ww||w.hw||w.attitude);
   const wwPass  = f.filter(w=>w.ww==="Pass").length;
   const wwTotal = f.filter(w=>w.ww==="Pass"||w.ww==="Retest").length;
   const hwGood  = f.filter(w=>w.hw==="Excellent"||w.hw==="Good").length;
   const attGood = f.filter(w=>w.attitude==="적극적").length;
-  const allGrammars = f.filter(w=>w.grammar).map(w=>w.grammar).join(", ") || "없음";
-  const allWritings = f.filter(w=>w.writing).map(w=>w.writing).join(" / ") || "없음";
+  const allGrammars = f.filter(w=>w.grammar).map(w=>w.grammar).join(", ");
+  const allWritings = f.filter(w=>w.writing).map(w=>w.writing).join(" / ");
+  const allReadings = f.filter(w=>w.reading).map(w=>w.reading).join(" / ");
+
+  const subjectLines = [
+    allGrammars ? `이번 달 Grammar 학습 단원: ${allGrammars}` : null,
+    allReadings ? `이번 달 Reading 기록: ${allReadings}` : null,
+    allWritings ? `이번 달 Writing 평가 기록: ${allWritings}` : null,
+  ].filter(Boolean).join("\n") || "(과목별 진도 기록 없음)";
+
+  const subjectInstructions = [
+    allGrammars ? `Grammar: 위 단원들을 학습하며 학생이 성취한 내용을 간결하게 서술해 주세요.` : null,
+    allWritings ? `Writing: 한 달간 평가 흐름을 바탕으로 쓰기 실력 변화를 간결하게 서술해 주세요.` : null,
+    allReadings ? `Reading: 기록된 이해도를 바탕으로 간결하게 서술해 주세요.` : null,
+  ].filter(Boolean);
+
   return `당신은 영어학원 선생님입니다. 아래 월간 누적 데이터로 학부모에게 보낼 월간 종합 리포트를 한국어로 작성해주세요.
 
 학생: ${team}팀 ${student} / 기록 수업: ${f.length}회
 WW Pass율: ${wwTotal>0?Math.round(wwPass/wwTotal*100):0}% (Pass ${wwPass}회 / Retest ${wwTotal-wwPass}회)
 숙제 이행율: ${f.length>0?Math.round(hwGood/f.length*100):0}% / 적극적 태도: ${attGood}/${f.length}회
-이번 달 Grammar 학습 단원: ${allGrammars}
-이번 달 Writing 평가 기록: ${allWritings}
+${subjectLines}
 
-[Grammar 안내] 위 단원들을 학습하며 학생이 성취한 문법 역량을 구체적으로 서술해 주세요.
-[Writing 안내] 한 달간 Writing 평가 흐름을 바탕으로 학생의 쓰기 실력 변화를 구체적으로 서술해 주세요.
-
-요구사항:
-- 5~6문장 분량
-- 학생 이름으로 시작
-- 전체 성취 → 강점(Grammar·Writing 구체 언급) → 보완점 → 다음 달 응원 순서
-- 수치를 자연스럽게 포함
-- 마크다운 없이 순수 텍스트만`;
+[작성 규칙 — 반드시 준수]
+1. 입력되지 않은 항목(Reading, Writing, Grammar 등)은 절대 언급하지 마세요. 없는 내용을 지어내지 마세요.
+2. "눈부신 성장", "정말 훌륭해요", "대단한 발전" 같은 과장 표현은 사용하지 마세요.
+3. 수치(Pass율, 숙제 이행율 등)를 자연스럽게 포함하여 사실 중심으로 작성하세요.
+4. 5~6문장 분량으로 작성하세요.
+5. 학생 이름으로 시작하세요.
+6. 순서: 전체 성취 요약(수치 포함) → 잘한 점(입력된 과목만) → 보완할 점 → 다음 달 응원 한 마디
+${subjectInstructions.length > 0 ? "\n[입력된 과목별 안내]\n" + subjectInstructions.map((s,i)=>`${i+1}. ${s}`).join("\n") : ""}
+- 마크다운 없이 순수 텍스트만 출력하세요.`;
 }
-
 // ══════════════════════════════════════════════════════════
 // UI 컴포넌트
 // ══════════════════════════════════════════════════════════
