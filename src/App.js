@@ -111,11 +111,20 @@ async function saveToSheet(payload) {
   await fetch(url);
 }
 
+// ISO 날짜(2026-03-23T15:00:00.000Z) → yyyy-MM-dd 변환
+function toDateInput(val) {
+  if (!val) return "";
+  if (/^\d{4}-\d{2}-\d{2}$/.test(val)) return val; // 이미 올바른 형식
+  try { return new Date(val).toISOString().slice(0, 10); } catch(e) { return ""; }
+}
+
 async function loadFromSheet(team, student) {
   const url = `${APPS_SCRIPT_URL}?action=load&team=${encodeURIComponent(team)}&student=${encodeURIComponent(student)}`;
   const res  = await fetch(url);
   const data = await res.json();
-  return data.weeks || Array.from({length:4},()=>({...WEEK_EMPTY}));
+  const weeks = data.weeks || Array.from({length:4},()=>({...WEEK_EMPTY}));
+  // 날짜 형식 정규화
+  return weeks.map(w => ({ ...w, date: toDateInput(w.date) }));
 }
 
 async function saveFeedback(team, student, type, text) {
