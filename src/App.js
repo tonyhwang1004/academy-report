@@ -84,12 +84,19 @@ function printHtml(html, title) {
 // ══════════════════════════════════════════════════════════
 
 // [FIX] 타임아웃 + 상세 에러 처리 추가
+// [FIX] POST 방식으로 변경 (URI malformed 완전 방지)
+// 프롬프트에 한글/특수문자/이모지가 많으면 GET URL이 너무 길어 URIError 발생
+// text/plain Content-Type 사용 시 preflight(CORS) 없이 Apps Script POST 가능
 async function callClaude(prompt) {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 45000); // 45초 타임아웃
+  const timeoutId = setTimeout(() => controller.abort(), 45000);
   try {
-    const url = APPS_SCRIPT_URL + "?action=generateFeedback&prompt=" + encodeURIComponent(prompt);
-    const res = await fetch(url, { signal: controller.signal });
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      signal: controller.signal,
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify({ action: "generateFeedback", prompt }),
+    });
     clearTimeout(timeoutId);
     if (!res.ok) throw new Error(`서버 오류: HTTP ${res.status}`);
     const data = await res.json();
@@ -127,13 +134,20 @@ async function loadFromSheet(team, student) {
   return weeks.map(w => ({ ...w, date: toDateInput(w.date) }));
 }
 
+// [FIX] POST 방식 (피드백 텍스트가 길면 GET URL 초과로 URI malformed 발생)
 async function saveFeedback(team, student, type, text) {
-  const url = APPS_SCRIPT_URL + "?action=saveFeedback&team=" + encodeURIComponent(team)
-    + "&student=" + encodeURIComponent(student)
-    + "&type=" + encodeURIComponent(type)
-    + "&date=" + new Date().toISOString().slice(0,10)
-    + "&text=" + encodeURIComponent(text);
-  await fetch(url);
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify({
+        action: "saveFeedback",
+        team, student, type,
+        date: new Date().toISOString().slice(0, 10),
+        text,
+      }),
+    });
+  } catch(e) { console.error("saveFeedback 실패:", e); }
 }
 
 async function loadFeedbackHistory(team, student) {
