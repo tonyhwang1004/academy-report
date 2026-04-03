@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7j-laaG375ha--NBLuYF4lSXSYVpPefsHRWXMBbPt72q_2Yf17xgv0Sh81NwPccXcvg/exec";
 const ADMIN_PASSWORD  = "sue12345";
-const ANTHROPIC_KEY = process.env.REACT_APP_ANTHROPIC_KEY || "";
 
 const TEACHERS = [
   { id:"anni", name:"anni",     password:"anni",     role:"manager" },
@@ -83,13 +82,27 @@ function printHtml(html, title) {
 // ══════════════════════════════════════════════════════════
 // API 함수들
 // ══════════════════════════════════════════════════════════
+
+// [FIX] 타임아웃 + 상세 에러 처리 추가
 async function callClaude(prompt) {
-  const url = APPS_SCRIPT_URL + "?action=generateFeedback&prompt=" + encodeURIComponent(prompt);
-  const res = await fetch(url);
-  const data = await res.json();
-  if (data.error) throw new Error(data.error);
-  return data.text || "";
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 45000); // 45초 타임아웃
+  try {
+    const url = APPS_SCRIPT_URL + "?action=generateFeedback&prompt=" + encodeURIComponent(prompt);
+    const res = await fetch(url, { signal: controller.signal });
+    clearTimeout(timeoutId);
+    if (!res.ok) throw new Error(`서버 오류: HTTP ${res.status}`);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    if (!data.text) throw new Error("AI 응답이 비어있습니다");
+    return data.text;
+  } catch(e) {
+    clearTimeout(timeoutId);
+    if (e.name === "AbortError") throw new Error("요청 시간 초과 (45초) — 네트워크 또는 Apps Script 확인");
+    throw e;
+  }
 }
+
 async function saveToSheet(payload) {
   const url = APPS_SCRIPT_URL + "?action=save&team=" + encodeURIComponent(payload.team)
     + "&student=" + encodeURIComponent(payload.student)
@@ -97,12 +110,14 @@ async function saveToSheet(payload) {
     + "&week=" + encodeURIComponent(JSON.stringify(payload.week));
   await fetch(url);
 }
+
 async function loadFromSheet(team, student) {
   const url = `${APPS_SCRIPT_URL}?action=load&team=${encodeURIComponent(team)}&student=${encodeURIComponent(student)}`;
   const res  = await fetch(url);
   const data = await res.json();
   return data.weeks || Array.from({length:4},()=>({...WEEK_EMPTY}));
 }
+
 async function saveFeedback(team, student, type, text) {
   const url = APPS_SCRIPT_URL + "?action=saveFeedback&team=" + encodeURIComponent(team)
     + "&student=" + encodeURIComponent(student)
@@ -111,6 +126,7 @@ async function saveFeedback(team, student, type, text) {
     + "&text=" + encodeURIComponent(text);
   await fetch(url);
 }
+
 async function loadFeedbackHistory(team, student) {
   try {
     const url = `${APPS_SCRIPT_URL}?action=getFeedbackHistory&team=${encodeURIComponent(team)}&student=${encodeURIComponent(student)}`;
@@ -119,6 +135,7 @@ async function loadFeedbackHistory(team, student) {
     return data.history || [];
   } catch(e) { return []; }
 }
+
 async function saveChartToSheet(team, student, chart, aiComment) {
   try {
     const url = APPS_SCRIPT_URL + "?action=saveChart&chartData=" + encodeURIComponent(JSON.stringify({
@@ -144,6 +161,7 @@ async function loadChartHistoryFromSheet(team, student) {
     return data.history || [];
   } catch(e) { return []; }
 }
+
 // ══════════════════════════════════════════════════════════
 // 프롬프트 빌더
 // ══════════════════════════════════════════════════════════
@@ -180,6 +198,7 @@ ${subjectLines}
 ${subjectInstructions.length > 0 ? "\n[입력된 과목별 안내]\n" + subjectInstructions.map((s,i)=>`${i+1}. ${s}`).join("\n") : ""}
 - 마크다운 없이 순수 텍스트만 출력하세요.`;
 }
+
 function buildMonthlyPrompt(team, student, weeks) {
   const f = weeks.filter(w=>w.ww||w.hw||w.attitude);
   const wwPass  = f.filter(w=>w.ww==="Pass").length;
@@ -219,6 +238,7 @@ ${subjectLines}
 ${subjectInstructions.length > 0 ? "\n[입력된 과목별 안내]\n" + subjectInstructions.map((s,i)=>`${i+1}. ${s}`).join("\n") : ""}
 - 마크다운 없이 순수 텍스트만 출력하세요.`;
 }
+
 // ══════════════════════════════════════════════════════════
 // UI 컴포넌트
 // ══════════════════════════════════════════════════════════
@@ -289,9 +309,6 @@ function StatCard({ label,value,color,icon }) {
   );
 }
 
-// ══════════════════════════════════════════════════════════
-// ReportBox — 🖨️ 인쇄 버튼 추가
-// ══════════════════════════════════════════════════════════
 function ReportBox({ text, loading, onCopy, onPrint, saved }) {
   if (loading) return (
     <div style={{ background:"#f8fafc",borderRadius:18,padding:32,display:"flex",alignItems:"center",gap:14,border:"2px dashed #e2e8f0" }}>
@@ -551,7 +568,11 @@ function AnniPanel({ teams, onSave, onClose }) {
     </div>
   );
 }
-function HistoryPanel({ team, student, onClose, onLoad }) {  
+
+// ══════════════════════════════════════════════════════════
+// HistoryPanel
+// ══════════════════════════════════════════════════════════
+function HistoryPanel({ team, student, onClose, onLoad }) {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied]   = useState(null);
@@ -659,18 +680,20 @@ function HistoryPanel({ team, student, onClose, onLoad }) {
                         {item.ww && <span style={{ fontSize:11,fontWeight:700,color:WW_C[item.ww]||"#94a3b8",background:(WW_C[item.ww]||"#94a3b8")+"18",padding:"2px 8px",borderRadius:6 }}>{item.ww}</span>}
                         {item.hw && <span style={{ fontSize:11,fontWeight:700,color:HW_C[item.hw]||"#94a3b8",background:(HW_C[item.hw]||"#94a3b8")+"18",padding:"2px 8px",borderRadius:6 }}>{item.hw}</span>}
                       </div>
-                      <button
-                        onClick={() => { onLoad(item); onClose(); }}
-                        style={{ background:"#f0fdf4",color:"#10b981",border:"1.5px solid #bbf7d0",borderRadius:8,padding:"4px 12px",fontSize:11,cursor:"pointer",fontWeight:700,fontFamily:"'Noto Sans KR',sans-serif",flexShrink:0 }}
-                       >
-                         📥 불러오기
-                      </button>
-                      <button
-                        onClick={() => handleCopy(item.text, idx)}
-                        style={{ background:copied===idx?"#10b981":"#fff",color:copied===idx?"#fff":accentColor,border:`1.5px solid ${copied===idx?"#10b981":borderColor}`,borderRadius:8,padding:"4px 12px",fontSize:11,cursor:"pointer",fontWeight:700,fontFamily:"'Noto Sans KR',sans-serif",transition:"all .2s",flexShrink:0 }}
-                      >
-                        {copied===idx ? "✓ 복사됨" : "📋 복사"}
-                      </button>
+                      <div style={{ display:"flex",gap:6 }}>
+                        <button
+                          onClick={() => { onLoad(item); onClose(); }}
+                          style={{ background:"#f0fdf4",color:"#10b981",border:"1.5px solid #bbf7d0",borderRadius:8,padding:"4px 12px",fontSize:11,cursor:"pointer",fontWeight:700,fontFamily:"'Noto Sans KR',sans-serif",flexShrink:0 }}
+                        >
+                          📥 불러오기
+                        </button>
+                        <button
+                          onClick={() => handleCopy(item.text, idx)}
+                          style={{ background:copied===idx?"#10b981":"#fff",color:copied===idx?"#fff":accentColor,border:`1.5px solid ${copied===idx?"#10b981":borderColor}`,borderRadius:8,padding:"4px 12px",fontSize:11,cursor:"pointer",fontWeight:700,fontFamily:"'Noto Sans KR',sans-serif",transition:"all .2s",flexShrink:0 }}
+                        >
+                          {copied===idx ? "✓ 복사됨" : "📋 복사"}
+                        </button>
+                      </div>
                     </div>
                     <p style={{ margin:0,fontSize:13,lineHeight:1.9,color:"#374151",fontFamily:"'Noto Sans KR',sans-serif",whiteSpace:"pre-wrap" }}>{item.text}</p>
                   </div>
@@ -683,16 +706,10 @@ function HistoryPanel({ team, student, onClose, onLoad }) {
     </div>
   );
 }
+
 // ══════════════════════════════════════════════════════════
-// Student Chart — 🖨️ 인쇄 기능 추가
+// ChartHistoryPanel
 // ══════════════════════════════════════════════════════════
-const CHART_EMPTY = {
-  name:"", mainBook:"", date:"",
-  listening1:"", listening2:"",
-  pronunciation:"",
-  tasks:["","","",""],
-  homework:["","",""],
-};
 function ChartHistoryPanel({ team, student, onClose, onLoad }) {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -758,6 +775,18 @@ function ChartHistoryPanel({ team, student, onClose, onLoad }) {
     </div>
   );
 }
+
+// ══════════════════════════════════════════════════════════
+// StudentChart — [FIX] 버튼 중첩 버그 수정
+// ══════════════════════════════════════════════════════════
+const CHART_EMPTY = {
+  name:"", mainBook:"", date:"",
+  listening1:"", listening2:"",
+  pronunciation:"",
+  tasks:["","","",""],
+  homework:["","",""],
+};
+
 function StudentChart({ teams, onClose }) {
   const [chart, setChart] = useState({...CHART_EMPTY, tasks:["","","",""], homework:["","",""]});
   const [copied, setCopied] = useState(false);
@@ -779,7 +808,6 @@ function StudentChart({ teams, onClose }) {
     return `📋 Student Chart\n${line}\n👤 이름 : ${chart.name||"(이름)"}\n📚 교재 : ${chart.mainBook||"(교재)"}\n📅 날짜 : ${chart.date||"(날짜)"}\n${line}\n\n🎧 Intensive Listening\n  · ${chart.listening1||"—"}\n  · ${chart.listening2||"—"}\n${line}\n\n🗣 Pronunciation &\n   Comprehension Check\n  ${chart.pronunciation||"—"}\n${line}\n\n✅ Today's Task\n${tk.length?tk.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}\n${line}\n\n🏠 Home Connection\n   (Unfinished Work)\n${hw.length?hw.map((x,i)=>`  ${i+1}. ${x}`).join("\n"):"  —"}\n${line}${aiComment?`\n\n💬 선생님 코멘트\n${line}\n  ${aiComment}\n${line}`:""}`;
   };
 
-  // 🖨️ Student Chart 인쇄
   const handlePrintChart = () => {
     const tk = chart.tasks.filter(x=>x.trim());
     const hw = chart.homework.filter(x=>x.trim());
@@ -856,12 +884,13 @@ Home Connection: ${hw.join(", ")||"—"}
 - 격려와 응원으로 마무리
 - 마크다운 없이 순수 텍스트만`;
     try {
-      const url = APPS_SCRIPT_URL + "?action=generateFeedback&prompt=" + encodeURIComponent(prompt);
-      const res = await fetch(url);
-      const data = await res.json();
-      setAiComment(data.text||"");
-    } catch(e) { setAiComment("코멘트 생성 실패 — 다시 시도해주세요"); }
-    finally { setAiLoading(false); }
+      const text = await callClaude(prompt);
+      setAiComment(text);
+    } catch(e) {
+      setAiComment("코멘트 생성 실패 — " + e.message);
+    } finally {
+      setAiLoading(false);
+    }
   };
 
   return (
@@ -877,26 +906,32 @@ Home Connection: ${hw.join(", ")||"—"}
           </div>
           <button onClick={onClose} style={{ background:"#f1f5f9",border:"none",borderRadius:10,width:36,height:36,fontSize:18,cursor:"pointer",color:"#64748b" }}>✕</button>
         </div>
+
         <div style={{ padding:"22px 26px" }}>
-  {showChartHistory && <ChartHistoryPanel
-  team={selTeam||Object.keys(teams)[0]}
-  student={selStudent||""}
-  onClose={()=>setShowChartHistory(false)}
-  onLoad={(item)=>{
-    setChart({
-      name:          item.student||"",
-      mainBook:      item.mainBook||"",
-      date:          item.date||"",
-      listening1:    item.listening1||"",
-      listening2:    item.listening2||"",
-      pronunciation: item.pronunciation||"",
-      tasks:         item.tasks||["","","",""],
-      homework:      item.homework||["","",""],
-    });
-    setAiComment(item.aiComment||"");
-    setShowChartHistory(false);
-  }}
-/>}
+          {/* [FIX] ChartHistoryPanel은 조건부 렌더링으로 StudentChart 바깥에 분리 */}
+          {showChartHistory && (
+            <ChartHistoryPanel
+              team={selTeam || Object.keys(teams)[0]}
+              student={selStudent || ""}
+              onClose={()=>setShowChartHistory(false)}
+              onLoad={(item)=>{
+                setChart({
+                  name:          item.student||"",
+                  mainBook:      item.mainBook||"",
+                  date:          item.date||"",
+                  listening1:    item.listening1||"",
+                  listening2:    item.listening2||"",
+                  pronunciation: item.pronunciation||"",
+                  tasks:         Array.isArray(item.tasks) ? item.tasks : ["","","",""],
+                  homework:      Array.isArray(item.homework) ? item.homework : ["","",""],
+                });
+                setAiComment(item.aiComment||"");
+                setShowChartHistory(false);
+              }}
+            />
+          )}
+
+          {/* 학생 선택 */}
           <div style={{ marginBottom:18 }}>
             <div style={{ fontSize:11,fontWeight:700,color:"#94a3b8",letterSpacing:1.5,marginBottom:10,fontFamily:"'DM Mono',monospace" }}>학생 선택</div>
             {Object.entries(teams).map(([tName,students],ti)=>{
@@ -914,6 +949,8 @@ Home Connection: ${hw.join(", ")||"—"}
               );
             })}
           </div>
+
+          {/* 기본 정보 */}
           <div style={{ display:"grid",gridTemplateColumns:"1fr 2fr 1fr",gap:10,marginBottom:14 }}>
             {[{label:"Name",key:"name",ph:"Student Name"},{label:"Book Title",key:"mainBook",ph:"Book Title"},{label:"Date",key:"date",ph:"Date",type:"date"}].map(({label,key,ph,type})=>(
               <div key={key}>
@@ -925,6 +962,8 @@ Home Connection: ${hw.join(", ")||"—"}
               </div>
             ))}
           </div>
+
+          {/* Listening */}
           <div style={{ background:"#f8fafc",borderRadius:16,border:"1.5px solid #f1f5f9",padding:"14px 16px",marginBottom:10 }}>
             <div style={{ fontSize:10,fontWeight:700,color:"#3b82f6",marginBottom:8,fontFamily:"'DM Mono',monospace",letterSpacing:1 }}>🎧 INTENSIVE LISTENING</div>
             <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:8 }}>
@@ -936,6 +975,8 @@ Home Connection: ${hw.join(", ")||"—"}
               ))}
             </div>
           </div>
+
+          {/* Pronunciation */}
           <div style={{ background:"#f8fafc",borderRadius:16,border:"1.5px solid #f1f5f9",padding:"14px 16px",marginBottom:10 }}>
             <div style={{ fontSize:10,fontWeight:700,color:"#8b5cf6",marginBottom:8,fontFamily:"'DM Mono',monospace",letterSpacing:1 }}>🗣 PRONUNCIATION & COMPREHENSION CHECK</div>
             <textarea value={chart.pronunciation} onChange={e=>upd("pronunciation",e.target.value)} placeholder="발음·이해도 체크 내용 입력"
@@ -943,6 +984,8 @@ Home Connection: ${hw.join(", ")||"—"}
               onFocus={e=>e.target.style.borderColor="#8b5cf6"} onBlur={e=>e.target.style.borderColor="#f1f5f9"}
             />
           </div>
+
+          {/* Tasks */}
           <div style={{ background:"#f8fafc",borderRadius:16,border:"1.5px solid #f1f5f9",padding:"14px 16px",marginBottom:10 }}>
             <div style={{ fontSize:10,fontWeight:700,color:"#10b981",marginBottom:8,fontFamily:"'DM Mono',monospace",letterSpacing:1 }}>✅ TODAY'S TASK</div>
             {chart.tasks.map((v,i)=>(
@@ -955,6 +998,8 @@ Home Connection: ${hw.join(", ")||"—"}
               </div>
             ))}
           </div>
+
+          {/* Homework */}
           <div style={{ background:"#f8fafc",borderRadius:16,border:"1.5px solid #f1f5f9",padding:"14px 16px",marginBottom:16 }}>
             <div style={{ fontSize:10,fontWeight:700,color:"#f59e0b",marginBottom:8,fontFamily:"'DM Mono',monospace",letterSpacing:1 }}>🏠 HOME CONNECTION (UNFINISHED WORK)</div>
             {chart.homework.map((v,i)=>(
@@ -967,12 +1012,24 @@ Home Connection: ${hw.join(", ")||"—"}
               </div>
             ))}
           </div>
-          <button onClick={genAiComment} disabled={aiLoading} style={{ width:"100%",marginBottom:10,padding:"14px",background:aiLoading?"#f1f5f9":"linear-gradient(135deg,#6366f1,#8b5cf6)",color:aiLoading?"#94a3b8":"#fff",border:"none",borderRadius:14,fontSize:14,fontWeight:800,cursor:aiLoading?"not-allowed":"pointer",fontFamily:"'Noto Sans KR',sans-serif",boxShadow:aiLoading?"none":"0 8px 24px #6366f130",transition:"all .2s" }}>
-           <button onClick={()=>setShowChartHistory(true)} style={{ width:"100%",marginBottom:10,padding:"14px",background:"linear-gradient(135deg,#10b981,#3b82f6)",color:"#fff",border:"none",borderRadius:14,fontSize:14,fontWeight:800,cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif",boxShadow:"0 8px 24px #10b98130" }}>
-  📚 지난 Chart 불러오기
-</button>            
-{aiLoading?"✨ AI 코멘트 생성 중...":"✨ AI 선생님 코멘트 자동 생성"}
+
+          {/* [FIX] 버튼 중첩 제거 — 두 버튼을 완전히 분리 */}
+          <button
+            onClick={()=>setShowChartHistory(true)}
+            style={{ width:"100%",marginBottom:10,padding:"14px",background:"linear-gradient(135deg,#10b981,#3b82f6)",color:"#fff",border:"none",borderRadius:14,fontSize:14,fontWeight:800,cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif",boxShadow:"0 8px 24px #10b98130" }}
+          >
+            📚 지난 Chart 불러오기
           </button>
+
+          <button
+            onClick={genAiComment}
+            disabled={aiLoading}
+            style={{ width:"100%",marginBottom:10,padding:"14px",background:aiLoading?"#f1f5f9":"linear-gradient(135deg,#6366f1,#8b5cf6)",color:aiLoading?"#94a3b8":"#fff",border:"none",borderRadius:14,fontSize:14,fontWeight:800,cursor:aiLoading?"not-allowed":"pointer",fontFamily:"'Noto Sans KR',sans-serif",boxShadow:aiLoading?"none":"0 8px 24px #6366f130",transition:"all .2s" }}
+          >
+            {aiLoading ? "✨ AI 코멘트 생성 중..." : "✨ AI 선생님 코멘트 자동 생성"}
+          </button>
+
+          {/* AI 코멘트 미리보기 */}
           {aiComment && (
             <div style={{ background:"linear-gradient(135deg,#eff6ff,#faf5ff)",borderRadius:14,border:"2px solid #e0e7ff",padding:"14px 16px",marginBottom:12 }}>
               <div style={{ fontSize:10,fontWeight:700,color:"#6366f1",marginBottom:8,fontFamily:"'DM Mono',monospace",letterSpacing:1.5 }}>💬 AI 코멘트 미리보기</div>
@@ -980,17 +1037,35 @@ Home Connection: ${hw.join(", ")||"—"}
               <button onClick={()=>setAiComment("")} style={{ marginTop:8,background:"none",border:"none",color:"#94a3b8",fontSize:11,cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif" }}>× 코멘트 삭제</button>
             </div>
           )}
+
+          {/* 하단 액션 버튼 */}
           <div style={{ display:"flex",gap:8 }}>
-            <button onClick={async()=>{
-  await saveChartToSheet(selTeam, selStudent, chart, aiComment);
-  alert("✅ 구글 시트에 저장됐습니다!");
-}} style={{ flex:"0 0 auto",background:"#eff6ff",border:"1.5px solid #bfdbfe",borderRadius:14,padding:"13px 16px",fontSize:13,fontWeight:700,color:"#6366f1",cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif" }}>
-  💾 저장
-</button>
-            <button onClick={()=>{ setChart({...CHART_EMPTY,tasks:["","","",""],homework:["","",""],name:selStudent}); setAiComment(""); }} style={{ flex:"0 0 auto",border:"2px solid #e2e8f0",borderRadius:14,padding:"13px 16px",fontSize:13,fontWeight:700,color:"#64748b",background:"#fff",cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif" }}>🔄 초기화</button>
-            <button onClick={handlePrintChart} style={{ flex:"0 0 auto",background:"#f0fdf4",border:"1.5px solid #bbf7d0",borderRadius:14,padding:"13px 16px",fontSize:13,fontWeight:700,color:"#10b981",cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif" }}>🖨️ 인쇄</button>
-            <button onClick={handleCopy} style={{ flex:1,background:copied?"linear-gradient(135deg,#10b981,#059669)":"linear-gradient(135deg,#10b981,#3b82f6)",color:"#fff",border:"none",borderRadius:14,padding:"13px",fontSize:15,fontWeight:800,cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif",boxShadow:"0 8px 24px #10b98130",transition:"all .2s" }}>
-              {copied?"✅ 복사됨!":"📋 카톡으로 복사"}
+            <button
+              onClick={async()=>{
+                await saveChartToSheet(selTeam, selStudent, chart, aiComment);
+                alert("✅ 구글 시트에 저장됐습니다!");
+              }}
+              style={{ flex:"0 0 auto",background:"#eff6ff",border:"1.5px solid #bfdbfe",borderRadius:14,padding:"13px 16px",fontSize:13,fontWeight:700,color:"#6366f1",cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif" }}
+            >
+              💾 저장
+            </button>
+            <button
+              onClick={()=>{ setChart({...CHART_EMPTY,tasks:["","","",""],homework:["","",""],name:selStudent}); setAiComment(""); }}
+              style={{ flex:"0 0 auto",border:"2px solid #e2e8f0",borderRadius:14,padding:"13px 16px",fontSize:13,fontWeight:700,color:"#64748b",background:"#fff",cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif" }}
+            >
+              🔄 초기화
+            </button>
+            <button
+              onClick={handlePrintChart}
+              style={{ flex:"0 0 auto",background:"#f0fdf4",border:"1.5px solid #bbf7d0",borderRadius:14,padding:"13px 16px",fontSize:13,fontWeight:700,color:"#10b981",cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif" }}
+            >
+              🖨️ 인쇄
+            </button>
+            <button
+              onClick={handleCopy}
+              style={{ flex:1,background:copied?"linear-gradient(135deg,#10b981,#059669)":"linear-gradient(135deg,#10b981,#3b82f6)",color:"#fff",border:"none",borderRadius:14,padding:"13px",fontSize:15,fontWeight:800,cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif",boxShadow:"0 8px 24px #10b98130",transition:"all .2s" }}
+            >
+              {copied ? "✅ 복사됨!" : "📋 카톡으로 복사"}
             </button>
           </div>
         </div>
@@ -1098,15 +1173,25 @@ export default function App() {
     finally { setLoading(false); }
   };
 
+  // [FIX] 월간 리포트 — 데이터 없을 때 조기 반환 + 명확한 에러 처리
   const genMonthly = async () => {
+    const filledCheck = weeks.filter(w => w.ww || w.hw || w.attitude);
+    if (filledCheck.length === 0) {
+      showToast("⚠️ 주간 데이터가 없습니다. 먼저 주간 탭에서 데이터를 입력해주세요.");
+      return;
+    }
     setLoading(true); setMonthlyRes(""); setMSaved(false);
     try {
-      const text=await callClaude(buildMonthlyPrompt(team,student,weeks));
+      const text = await callClaude(buildMonthlyPrompt(team, student, weeks));
       setMonthlyRes(text);
-      await saveFeedback(team,student,"monthly",text);
-      setMSaved(true); showToast("✅ 월간 리포트 생성 & 시트 저장 완료");
-    } catch(e) { showToast("❌ 오류: "+e.message); }
-    finally { setLoading(false); }
+      await saveFeedback(team, student, "monthly", text);
+      setMSaved(true);
+      showToast("✅ 월간 리포트 생성 & 시트 저장 완료");
+    } catch(e) {
+      showToast("❌ 오류: " + e.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // 🖨️ 주간 리포트 인쇄
@@ -1236,24 +1321,31 @@ export default function App() {
     <div style={{ minHeight:"100vh",background:"linear-gradient(150deg,#f0f4ff 0%,#fdf4ff 50%,#f0fdf9 100%)",fontFamily:"'Noto Sans KR',sans-serif",paddingBottom:60 }}>
       {showAdminPanel && <AdminPanel teams={teams} onSave={handleAdminSave} onClose={()=>setShowAdminPanel(false)}/>}
       {showAnniPanel  && <AnniPanel  teams={teams} onSave={handleAnniSave}  onClose={()=>setShowAnniPanel(false)}/>}
-       
       {showChartPanel && <StudentChart teams={teams} onClose={()=>setShowChartPanel(false)}/>}
-      {showHistoryPanel && <HistoryPanel team={team} student={student} onClose={()=>setShowHistoryPanel(false)} onLoad={(item)=>{
-  setTab("weekly");
-  setWeeklyRes(item.text||"");
-  setWeeks(prev => {
-    const updated = [...prev];
-    updated[wIdx] = {
-      ...updated[wIdx],
-      grammar: item.grammar||"",
-      ww:      item.ww||"",
-      hw:      item.hw||"",
-    };
-    return updated;
-  });
-  setShowHistoryPanel(false);
-  showToast("✅ 과거 데이터를 불러왔습니다. 수정 후 전송하세요!");
-}}/>}        
+      {showHistoryPanel && (
+        <HistoryPanel
+          team={team}
+          student={student}
+          onClose={()=>setShowHistoryPanel(false)}
+          onLoad={(item)=>{
+            setTab("weekly");
+            setWeeklyRes(item.text||"");
+            setWeeks(prev => {
+              const updated = [...prev];
+              updated[wIdx] = {
+                ...updated[wIdx],
+                grammar: item.grammar||"",
+                ww:      item.ww||"",
+                hw:      item.hw||"",
+              };
+              return updated;
+            });
+            setShowHistoryPanel(false);
+            showToast("✅ 과거 데이터를 불러왔습니다. 수정 후 전송하세요!");
+          }}
+        />
+      )}
+
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&family=DM+Mono:wght@500;700&display=swap');
         @keyframes spin{to{transform:rotate(360deg)}}
@@ -1280,7 +1372,7 @@ export default function App() {
                 👩‍🏫 반 관리
               </button>
             )}
-            {isManager && (
+            {(isManager || isAdmin) && (
               <button onClick={()=>setShowChartPanel(true)} style={{ background:"#eff6ff",border:"1.5px solid #bfdbfe",borderRadius:20,padding:"5px 14px",fontSize:11,color:"#3b82f6",cursor:"pointer",fontWeight:700,fontFamily:"'DM Mono',monospace" }}>
                 📋 Student Chart
               </button>
@@ -1300,10 +1392,10 @@ export default function App() {
               <div style={{ width:7,height:7,borderRadius:"50%",background:"#10b981",boxShadow:"0 0 6px #10b98160" }}/>
               <span style={{ fontSize:11,color:"#10b981",fontWeight:700,fontFamily:"'DM Mono',monospace" }}>AI ON</span>
             </div>
-              <button onClick={()=>setShowHistoryPanel(true)} style={{ background:"#faf5ff",border:"1.5px solid #ddd6fe",borderRadius:20,padding:"5px 14px",fontSize:11,color:"#8b5cf6",cursor:"pointer",fontWeight:700,fontFamily:"'DM Mono',monospace" }}>
-  📚 지난 피드백
-</button>
-              <button onClick={handleLogout} style={{ background:"#fff0f5",border:"1.5px solid #fecdd3",borderRadius:20,padding:"5px 14px",fontSize:11,color:"#f43f7a",cursor:"pointer",fontWeight:700,fontFamily:"'DM Mono',monospace" }}>
+            <button onClick={()=>setShowHistoryPanel(true)} style={{ background:"#faf5ff",border:"1.5px solid #ddd6fe",borderRadius:20,padding:"5px 14px",fontSize:11,color:"#8b5cf6",cursor:"pointer",fontWeight:700,fontFamily:"'DM Mono',monospace" }}>
+              📚 지난 피드백
+            </button>
+            <button onClick={handleLogout} style={{ background:"#fff0f5",border:"1.5px solid #fecdd3",borderRadius:20,padding:"5px 14px",fontSize:11,color:"#f43f7a",cursor:"pointer",fontWeight:700,fontFamily:"'DM Mono',monospace" }}>
               로그아웃
             </button>
           </div>
@@ -1411,8 +1503,23 @@ export default function App() {
                 })}
               </div>
             </div>
-            <button onClick={genMonthly} disabled={loading} style={{ width:"100%",padding:"16px",background:loading?"#f1f5f9":"linear-gradient(135deg,#8b5cf6,#6366f1,#3b82f6)",color:loading?"#94a3b8":"#fff",border:"none",borderRadius:16,fontSize:15,fontWeight:800,cursor:loading?"not-allowed":"pointer",fontFamily:"'Noto Sans KR',sans-serif",transition:"all .2s",boxShadow:loading?"none":"0 8px 24px #8b5cf630" }}>
-              {loading?"🏆 생성 중...":`🏆 ${student} 월간 종합 리포트 생성 + 저장`}
+
+            {/* [FIX] 월간 리포트 생성 버튼 — 데이터 없을 때 안내 표시 */}
+            {filled.length === 0 && (
+              <div style={{ marginBottom:12,padding:"14px 18px",background:"#fffbeb",borderRadius:14,border:"1.5px solid #fde68a",display:"flex",gap:10,alignItems:"center" }}>
+                <span style={{ fontSize:16 }}>⚠️</span>
+                <span style={{ fontSize:13,color:"#92400e",fontFamily:"'Noto Sans KR',sans-serif" }}>
+                  주간 데이터가 없습니다. 먼저 <strong>주간 리포트 탭</strong>에서 WW·숙제·태도를 입력해주세요.
+                </span>
+              </div>
+            )}
+
+            <button
+              onClick={genMonthly}
+              disabled={loading}
+              style={{ width:"100%",padding:"16px",background:loading?"#f1f5f9":"linear-gradient(135deg,#8b5cf6,#6366f1,#3b82f6)",color:loading?"#94a3b8":"#fff",border:"none",borderRadius:16,fontSize:15,fontWeight:800,cursor:loading?"not-allowed":"pointer",fontFamily:"'Noto Sans KR',sans-serif",transition:"all .2s",boxShadow:loading?"none":"0 8px 24px #8b5cf630" }}
+            >
+              {loading ? "🏆 생성 중..." : `🏆 ${student} 월간 종합 리포트 생성 + 저장`}
             </button>
             <div style={{ marginTop:16 }}>
               <ReportBox text={monthlyRes} loading={loading} onCopy={()=>navigator.clipboard.writeText(monthlyRes)} onPrint={printMonthly} saved={mSaved}/>
