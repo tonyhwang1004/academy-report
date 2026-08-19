@@ -1,13 +1,6 @@
 import { useState, useEffect } from "react";
 
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7j-laaG375ha--NBLuYF4lSXSYVpPefsHRWXMBbPt72q_2Yf17xgv0Sh81NwPccXcvg/exec";
-const ADMIN_PASSWORD  = "sue12345";
-
-const TEACHERS = [
-  { id:"anni", name:"anni",     password:"anni",     role:"manager" },
-  { id:"suzi", name:"suzi",     password:"suzi",     role:"teacher" },
-  { id:"t3",   name:"선생님3",  password:"teacher3", role:"teacher" },
-];
 
 const DEFAULT_TEAMS = {
   Lilly:   ["Amy","Brian","Chloe","Daniel","Emma"],
@@ -87,6 +80,17 @@ function printHtml(html, title) {
 // [FIX] POST 방식으로 변경 (URI malformed 완전 방지)
 // 프롬프트에 한글/특수문자/이모지가 많으면 GET URL이 너무 길어 URIError 발생
 // text/plain Content-Type 사용 시 preflight(CORS) 없이 Apps Script POST 가능
+// 로그인 확인 — 비밀번호는 브라우저에 저장하지 않고 서버에서만 대조합니다
+async function verifyLogin(id, password, kind) {
+  const res = await fetch(APPS_SCRIPT_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain" },
+    body: JSON.stringify({ action: "verifyLogin", kind, id, password }),
+  });
+  if (!res.ok) throw new Error("서버에 연결할 수 없습니다");
+  return res.json();
+}
+
 async function callClaude(prompt) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 45000);
@@ -376,14 +380,30 @@ function LoginScreen({ onLogin, onAdminLogin }) {
   const [adminPw, setAdminPw]   = useState("");
   const [adminErr, setAdminErr] = useState(false);
 
-  const tryLogin = () => {
-    const teacher = TEACHERS.find(t => t.name === id && t.password === pw);
-    if (teacher) { onLogin(teacher); }
-    else { setErr("아이디 또는 비밀번호가 틀렸습니다"); setTimeout(()=>setErr(""),2000); }
+  const [busy, setBusy] = useState(false);
+
+  const tryLogin = async () => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      const r = await verifyLogin(id, pw, "teacher");
+      if (r.success) { onLogin({ id: r.id, name: r.name, role: r.role }); }
+      else { setErr("아이디 또는 비밀번호가 틀렸습니다"); setTimeout(()=>setErr(""),2000); }
+    } catch(e) {
+      setErr("연결 오류 — 네트워크를 확인해 주세요"); setTimeout(()=>setErr(""),2500);
+    } finally { setBusy(false); }
   };
-  const tryAdmin = () => {
-    if (adminPw === ADMIN_PASSWORD) { onAdminLogin(); }
-    else { setAdminErr(true); setTimeout(()=>setAdminErr(false),1500); }
+
+  const tryAdmin = async () => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      const r = await verifyLogin("", adminPw, "admin");
+      if (r.success) { onAdminLogin(); }
+      else { setAdminErr(true); setTimeout(()=>setAdminErr(false),1500); }
+    } catch(e) {
+      setAdminErr(true); setTimeout(()=>setAdminErr(false),1500);
+    } finally { setBusy(false); }
   };
 
   return (
@@ -412,8 +432,8 @@ function LoginScreen({ onLogin, onAdminLogin }) {
               />
               {err&&<div style={{ fontSize:12,color:"#f43f7a",marginTop:8,fontFamily:"'Noto Sans KR',sans-serif" }}>❌ {err}</div>}
             </div>
-            <button onClick={tryLogin} style={{ width:"100%",background:"linear-gradient(135deg,#6366f1,#8b5cf6)",color:"#fff",border:"none",borderRadius:14,padding:"14px",fontSize:15,fontWeight:800,cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif",boxShadow:"0 8px 24px #6366f130",marginBottom:14 }}>
-              로그인
+            <button onClick={tryLogin} style={{ width:"100%",background:"linear-gradient(135deg,#6366f1,#8b5cf6)",color:"#fff",border:"none",borderRadius:14,padding:"14px",fontSize:15,fontWeight:800,cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif",boxShadow:"0 8px 24px #6366f130",marginBottom:14,opacity:busy?0.6:1 }}>
+              {busy ? "확인 중..." : "로그인"}
             </button>
             <button onClick={()=>setMode("admin")} style={{ width:"100%",background:"none",border:"none",color:"#94a3b8",fontSize:12,cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif",padding:"4px" }}>
               ⚙️ 관리자로 로그인
@@ -432,7 +452,7 @@ function LoginScreen({ onLogin, onAdminLogin }) {
             {adminErr&&<div style={{ fontSize:12,color:"#f43f7a",marginBottom:12,textAlign:"center",fontFamily:"'Noto Sans KR',sans-serif" }}>❌ 비밀번호가 틀렸습니다</div>}
             <div style={{ display:"flex",gap:8 }}>
               <button onClick={()=>{setMode("teacher");setAdminPw("");}} style={{ flex:1,border:"2px solid #e2e8f0",borderRadius:12,padding:"11px",fontSize:13,fontWeight:700,color:"#64748b",background:"#fff",cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif" }}>뒤로</button>
-              <button onClick={tryAdmin} style={{ flex:2,background:"linear-gradient(135deg,#f43f7a,#f97316)",color:"#fff",border:"none",borderRadius:12,padding:"11px",fontSize:13,fontWeight:800,cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif" }}>로그인</button>
+              <button onClick={tryAdmin} style={{ flex:2,background:"linear-gradient(135deg,#f43f7a,#f97316)",color:"#fff",border:"none",borderRadius:12,padding:"11px",fontSize:13,fontWeight:800,cursor:"pointer",fontFamily:"'Noto Sans KR',sans-serif",opacity:busy?0.6:1 }}>{busy ? "확인 중..." : "로그인"}</button>
             </div>
           </div>
         )}
